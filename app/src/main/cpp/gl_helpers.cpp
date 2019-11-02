@@ -9,6 +9,14 @@
 #include "files.h"
 
 
+glm::vec3 operator+(glm::vec3 a, glm::vec3 b) {
+    return glm::vec3(
+            a.x + b.x,
+            a.y + b.y,
+            a.z + b.z
+    );
+}
+
 Program linkProgram(std::string vSrc, std::string fSrc) {
     GLuint prog = glCreateProgram();
     glAttachShader(prog, compileShader(GL_VERTEX_SHADER, std::move(vSrc)));
@@ -32,21 +40,6 @@ GLuint compileShader(GLuint type, std::string src) {
     return shader;
 }
 
-void configureCamera(Program &prog, glm::mat4 viewMat, glm::mat4 perspectiveMat) {
-    glUniformMatrix4fv(
-            prog.viewLocation,
-            1,
-            GL_FALSE,
-            glm::value_ptr(viewMat)
-    );
-    glUniformMatrix4fv(
-            prog.perspectiveLocation,
-            1,
-            GL_FALSE,
-            glm::value_ptr(perspectiveMat)
-    );
-}
-
 Program linkProgramByPath(std::string vPath, std::string fPath, Resources *res) {
     std::string vSrc = res->readFileAsString(vPath);
     std::string fSrc = res->readFileAsString(fPath);
@@ -55,6 +48,14 @@ Program linkProgramByPath(std::string vPath, std::string fPath, Resources *res) 
             fSrc
     );
     return program;
+}
+
+glm::mat4 getViewMatrixByOFU(glm::vec3 origin, glm::vec3 front, glm::vec3 up) {
+    return glm::lookAt(
+            origin,
+            origin + front,
+            up
+    );
 }
 
 // === PROGRAM === //
@@ -94,4 +95,19 @@ void Program::init() {
 
 void Program::use() {
     glUseProgram(prog);
+}
+
+void Program::configureCamera(glm::mat4 viewMat, glm::mat4 perspectiveMat) {
+    glUniformMatrix4fv(
+            this->viewLocation,
+            1,
+            GL_FALSE,
+            glm::value_ptr(viewMat)
+    );
+    glUniformMatrix4fv(
+            this->perspectiveLocation,
+            1,
+            GL_FALSE,
+            glm::value_ptr(perspectiveMat)
+    );
 }

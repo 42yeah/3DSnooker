@@ -27,6 +27,7 @@ public:
     Program ballProgram;
     float aspectRatio;
     glm::mat4 viewMat, perspectiveMat;
+    glm::vec3 origin, front, up;
 
     // === Models === //
     Model pool;

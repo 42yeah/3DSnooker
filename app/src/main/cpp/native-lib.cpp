@@ -31,7 +31,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_Engine_motionEvent(JNIEnv *env, jobject instance, jint action,
                                                    jfloat x, jfloat y) {
-    // TODO
+    LOG("Action: %d %f %f", action, x, y);
 }
 
 // === RENDER === //
@@ -45,7 +45,7 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_setAssetManager(JNIEnv *env, jobj
 extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobject instance) {
-    glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     LOG("Version %s", glGetString(GL_VERSION));
     memory.poolProgram = linkProgramByPath(
             "shaders/generic.vertex.glsl",
@@ -66,6 +66,11 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobje
     memory.pool.setRenderWireframe(true);
     memory.ball = Model(resources, "models/Ball.model");
 
+    // === CAMERAS === //
+    memory.front = glm::vec3(0.0f, 0.0f, -1.0f);
+    memory.up = glm::vec3(0.0f, 1.0f, 0.0f);
+    memory.origin = glm::vec3(0.15f, 0.7f, 2.0f);
+
     // === TESTS === //
     memory.testModel = Model(resources, "models/TestCube.model");
 
@@ -77,26 +82,22 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceChanged(JNIEnv *env, jobje
                                                               jint h) {
     memory.aspectRatio = (float) w / h;
     memory.perspectiveMat = glm::perspective(45.0f, memory.aspectRatio, 0.1f, 100.0f);
-    memory.viewMat = glm::lookAt(
-            glm::vec3(3.0f, 0.7f, 2.5f),
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(0.0f, 1.0f, 0.0f)
-    );
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject instance) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    memory.viewMat = getViewMatrixByOFU(memory.origin, memory.front, memory.up);
 
     // === TESTS === //
     // memory.testModel.render(memory.prog, memory);
 
     memory.poolProgram.use();
-    configureCamera(memory.poolProgram, memory.viewMat, memory.perspectiveMat);
+    memory.poolProgram.configureCamera(memory.viewMat, memory.perspectiveMat);
     memory.pool.render(memory.poolProgram, memory);
 
     memory.ballProgram.use();
-    configureCamera(memory.ballProgram, memory.viewMat, memory.perspectiveMat);
+    memory.poolProgram.configureCamera(memory.viewMat, memory.perspectiveMat);
     memory.ball.render(memory.ballProgram, memory);
 }

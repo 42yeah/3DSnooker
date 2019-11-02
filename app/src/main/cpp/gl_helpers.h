@@ -22,13 +22,15 @@ class Memory;
 class Resources;
 
 // === METHODS === //
+glm::vec3 operator+(glm::vec3 a, glm::vec3 b);
+
 Program linkProgram(std::string vSrc, std::string fSrc);
 
 Program linkProgramByPath(std::string vPath, std::string fPath, Resources *res);
 
 GLuint compileShader(GLuint type, std::string src);
 
-void configureCamera(Program &prog, glm::mat4 viewMat, glm::mat4 perspectiveMat);
+glm::mat4 getViewMatrixByOFU(glm::vec3 origin, glm::vec3 front, glm::vec3 up);
 
 class Program {
 public:
@@ -40,6 +42,8 @@ public:
     void init();
 
     void use();
+
+    void configureCamera(glm::mat4 viewMat, glm::mat4 perspectiveMat);
 
     // === VARIABLES === //
     GLuint prog;

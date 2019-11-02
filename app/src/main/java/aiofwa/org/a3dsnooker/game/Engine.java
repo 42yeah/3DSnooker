@@ -19,7 +19,8 @@ public class Engine extends GLSurfaceView {
     }
 
     public void onMotionEvent(MotionEvent event) {
-
+        float w = getWidth(), h = getHeight();
+        motionEvent(event.getAction(), event.getX() / w, event.getY() / h);
     }
 
     // === NATIVE === //
