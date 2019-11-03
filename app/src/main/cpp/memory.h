@@ -28,13 +28,24 @@ public:
     float aspectRatio;
     glm::mat4 viewMat, perspectiveMat;
     glm::vec3 origin, front, up;
+    float originX, originY;
+    float deltaTime;
+    long long int lastInstant;
+    float horizontalRotation, verticalRotation;
+    float horizontalRotationBase, verticalRotationBase;
 
-    // === Models === //
+    // === MODELS === //
     Model pool;
     Model ball;
+    Model hole;
+
+    // === ENTITIES === //
+    std::vector<Entity> holes;
+    std::vector<glm::vec3> holePositions;
 
     // === TEST VARIABLES === //
     Model testModel;
+    float rotationDegree;
 };
 
 #endif //INC_3DSNOOKER_MEMORY_H

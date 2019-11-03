@@ -45,5 +45,22 @@ private:
     bool renderWireframe;
 };
 
+class Entity {
+public:
+    // === CONSTRUCTORS === //
+    Entity(Model &model);
+
+    // === METHODS === //
+    void update(float dt);
+
+    void render(Program &prog, Memory &mem);
+
+    // === VARIABLES === //
+    Model *flyweight;
+    glm::vec3 position;
+    glm::vec3 speed;
+    glm::vec3 accerleration;
+    bool renderWireframe;
+};
 
 #endif //INC_3DSNOOKER_MODEL_H

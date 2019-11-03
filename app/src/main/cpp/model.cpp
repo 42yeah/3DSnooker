@@ -81,3 +81,24 @@ void Model::render(Program &prog, Memory &mem) {
 void Model::setRenderWireframe(bool wireframe) {
     this->renderWireframe = wireframe;
 }
+
+// === ENTITY === //
+// === CONSTURCTORS === //
+Entity::Entity(Model &model) {
+    this->flyweight = &model;
+}
+
+// === METHODS === //
+void Entity::update(float dt) {
+    LOG("Update: Stub!");
+}
+
+void Entity::render(Program &prog, Memory &mem) {
+    this->flyweight->modelMat = glm::mat4(1.0f);
+    this->flyweight->modelMat = glm::translate(
+            this->flyweight->modelMat,
+            this->position
+    );
+    this->flyweight->setRenderWireframe(renderWireframe);
+    this->flyweight->render(prog, mem);
+}

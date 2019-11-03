@@ -5,6 +5,7 @@
 #include <android/log.h>
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
+#include <chrono>
 #include "files.h"
 #include "memory.h"
 #include "gl_helpers.h"
@@ -31,6 +32,24 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_Engine_motionEvent(JNIEnv *env, jobject instance, jint action,
                                                    jfloat x, jfloat y) {
+    switch (action) {
+        case 0:
+            memory.originX = x;
+            memory.originY = y;
+            memory.horizontalRotationBase = memory.horizontalRotation;
+            memory.verticalRotationBase = memory.verticalRotation;
+            break;
+
+        case 2:
+            float dx = -(x - memory.originX);
+            float dy = y - memory.originY;
+            memory.ball.modelMat = glm::mat4(1.0f);
+            memory.ball.modelMat = glm::translate(memory.ball.modelMat, glm::vec3(dx, dy, 0.0f));
+            memory.horizontalRotation = memory.horizontalRotationBase + dx * 2.0f;
+            memory.verticalRotation = memory.verticalRotationBase + dy * 5.0f;
+            memory.verticalRotation = fminf(fmaxf(memory.verticalRotation, -2.0f), 2.0f);
+            break;
+    }
     LOG("Action: %d %f %f", action, x, y);
 }
 
@@ -60,20 +79,33 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobje
 
     // === GL CONFIG === //
     glEnable(GL_DEPTH_TEST);
+    memory.lastInstant = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()
+    ).count();
 
     // === MODELS === //
     memory.pool = Model(resources, "models/Pool.model");
     memory.pool.setRenderWireframe(true);
     memory.ball = Model(resources, "models/Ball.model");
+    memory.hole = Model(resources, "models/Hole.model");
+
+    Entity holeEntity(memory.hole);
+    memory.holes.push_back(holeEntity);
+
+    memory.holePositions = std::vector<glm::vec3>({
+
+    });
 
     // === CAMERAS === //
     memory.front = glm::vec3(0.0f, 0.0f, -1.0f);
     memory.up = glm::vec3(0.0f, 1.0f, 0.0f);
     memory.origin = glm::vec3(0.15f, 0.7f, 2.0f);
+    memory.horizontalRotation = 0.0f;
+    memory.verticalRotation = 0.0f;
 
     // === TESTS === //
     memory.testModel = Model(resources, "models/TestCube.model");
-
+    memory.rotationDegree = 0.0f;
 }
 
 extern "C"
@@ -87,11 +119,30 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceChanged(JNIEnv *env, jobje
 extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject instance) {
+    long long int thisInstant = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()
+    ).count();
+    memory.deltaTime = (float) (thisInstant - memory.lastInstant) / 1000.0f;
+    memory.lastInstant = thisInstant;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    memory.viewMat = getViewMatrixByOFU(memory.origin, memory.front, memory.up);
+//    memory.viewMat = getViewMatrixByOFU(memory.origin, memory.front, memory.up);
 
     // === TESTS === //
     // memory.testModel.render(memory.prog, memory);
+    // memory.rotationDegree += memory.deltaTime * 1.0f;
+    float attenuation = powf(
+            fmaxf(fabsf(memory.verticalRotation), 1.0f),
+            2.0f
+    );
+    memory.viewMat = glm::lookAt(
+            glm::vec3(
+                    sinf(memory.horizontalRotation) * 1.5f / attenuation,
+                    0.7f + memory.verticalRotation,
+                    cosf(memory.horizontalRotation) * 1.5f / attenuation
+            ),
+            glm::vec3(0.25f, 0.5f, 0.25f),
+            memory.up
+    );
 
     memory.poolProgram.use();
     memory.poolProgram.configureCamera(memory.viewMat, memory.perspectiveMat);
@@ -99,5 +150,9 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject insta
 
     memory.ballProgram.use();
     memory.poolProgram.configureCamera(memory.viewMat, memory.perspectiveMat);
+    for (int i = 0; i < memory.holes.size(); i++) {
+        Entity &hole = memory.holes[i];
+        hole.render(memory.ballProgram, memory);
+    }
     memory.ball.render(memory.ballProgram, memory);
 }
