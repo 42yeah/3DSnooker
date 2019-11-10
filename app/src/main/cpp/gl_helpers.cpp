@@ -58,6 +58,13 @@ glm::mat4 getViewMatrixByOFU(glm::vec3 origin, glm::vec3 front, glm::vec3 up) {
     );
 }
 
+glm::vec3 getViewSphere(float pitch, float yaw) {
+    float x = sinf(yaw) * 5.0f;
+    float y = sinf(pitch) * 5.0f;
+    float z = cosf(yaw) * cosf(pitch) * 5.0f;
+    return glm::vec3(x, y, z);
+}
+
 // === PROGRAM === //
 // === CONSTRUCTORS === //
 Program::Program(GLuint prog) {

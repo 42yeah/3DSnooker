@@ -12,6 +12,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "nuklear.h"
 
 
 // === TESTS === //
@@ -36,21 +37,24 @@ Java_aiofwa_org_a3dsnooker_game_Engine_motionEvent(JNIEnv *env, jobject instance
         case 0:
             memory.originX = x;
             memory.originY = y;
-            memory.horizontalRotationBase = memory.horizontalRotation;
-            memory.verticalRotationBase = memory.verticalRotation;
+            memory.pitchBase = memory.pitch;
+            memory.yawBase = memory.yaw;
             break;
 
         case 2:
             float dx = -(x - memory.originX);
             float dy = y - memory.originY;
+            glm::vec3 dot = getViewSphere(memory.pitch, memory.yaw);
+            dot *= 0.1;
             memory.ball.modelMat = glm::mat4(1.0f);
-            memory.ball.modelMat = glm::translate(memory.ball.modelMat, glm::vec3(dx, dy, 0.0f));
-            memory.horizontalRotation = memory.horizontalRotationBase + dx * 2.0f;
-            memory.verticalRotation = memory.verticalRotationBase + dy * 5.0f;
-            memory.verticalRotation = fminf(fmaxf(memory.verticalRotation, -2.0f), 2.0f);
+//            memory.ball.modelMat = glm::translate(memory.ball.modelMat, glm::vec3(dx, dy, 0.0f));
+            memory.ball.modelMat = glm::translate(memory.ball.modelMat, dot);
+            memory.yaw = memory.yawBase + dx * 2.0f;
+            memory.pitch = memory.pitchBase + dy * 5.0f;
             break;
     }
-    LOG("Action: %d %f %f", action, x, y);
+
+//    LOG("Action: %d %f %f. Pitch & Yaw: %f %f", action, x, y, memory.pitch, memory.yaw);
 }
 
 // === RENDER === //
@@ -72,7 +76,7 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobje
             resources
     );
     memory.ballProgram = linkProgramByPath(
-            "shaders/generic.vertex.glsl",
+            "shaders/billboard.vertex.glsl",
             "shaders/balls.fragment.glsl",
             resources
     );
@@ -100,8 +104,8 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobje
     memory.front = glm::vec3(0.0f, 0.0f, -1.0f);
     memory.up = glm::vec3(0.0f, 1.0f, 0.0f);
     memory.origin = glm::vec3(0.15f, 0.7f, 2.0f);
-    memory.horizontalRotation = 0.0f;
-    memory.verticalRotation = 0.0f;
+    memory.pitch = 0.0f;
+    memory.yaw = 0.0f;
 
     // === TESTS === //
     memory.testModel = Model(resources, "models/TestCube.model");
@@ -130,16 +134,8 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject insta
     // === TESTS === //
     // memory.testModel.render(memory.prog, memory);
     // memory.rotationDegree += memory.deltaTime * 1.0f;
-    float attenuation = powf(
-            fmaxf(fabsf(memory.verticalRotation), 1.0f),
-            2.0f
-    );
     memory.viewMat = glm::lookAt(
-            glm::vec3(
-                    sinf(memory.horizontalRotation) * 1.5f / attenuation,
-                    0.7f + memory.verticalRotation,
-                    cosf(memory.horizontalRotation) * 1.5f / attenuation
-            ),
+            getViewSphere(memory.pitch, memory.yaw),
             glm::vec3(0.25f, 0.5f, 0.25f),
             memory.up
     );
@@ -155,4 +151,7 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject insta
         hole.render(memory.ballProgram, memory);
     }
     memory.ball.render(memory.ballProgram, memory);
+
+    // === UI === //
+
 }

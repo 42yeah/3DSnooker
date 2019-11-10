@@ -32,6 +32,8 @@ GLuint compileShader(GLuint type, std::string src);
 
 glm::mat4 getViewMatrixByOFU(glm::vec3 origin, glm::vec3 front, glm::vec3 up);
 
+glm::vec3 getViewSphere(float pitch, float yaw);
+
 class Program {
 public:
     // === CONSTURCTORS === //

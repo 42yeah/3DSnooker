@@ -13,6 +13,15 @@
 #include "model.h"
 #include "gl_helpers.h"
 
+#define NK_PRIVATE
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_STANDARD_IO
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_DEFAULT_FONT
+#include "nuklear.h"
+
 
 class Program;
 
@@ -31,8 +40,8 @@ public:
     float originX, originY;
     float deltaTime;
     long long int lastInstant;
-    float horizontalRotation, verticalRotation;
-    float horizontalRotationBase, verticalRotationBase;
+    float yaw, pitch;
+    float yawBase, pitchBase;
 
     // === MODELS === //
     Model pool;
@@ -46,6 +55,9 @@ public:
     // === TEST VARIABLES === //
     Model testModel;
     float rotationDegree;
+
+    // === NUKLEAR === //
+
 };
 
 #endif //INC_3DSNOOKER_MEMORY_H
