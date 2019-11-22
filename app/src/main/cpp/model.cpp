@@ -101,13 +101,14 @@ void Entity::update(float dt) {
 void Entity::render(Program &prog, Memory &mem) {
     this->flyweight->modelMat = glm::mat4(1.0f);
     this->flyweight->center = glm::vec3(0.0f, 0.0f, 0.0f);
-    if (!this->billboard) {
+    if (this->billboard) {
+        this->flyweight->center = this->position;
+    } else {
+        LOG("Now this is NOT a billboard, friend");
         this->flyweight->modelMat = glm::translate(
                 this->flyweight->modelMat,
                 this->position
         );
-    } else {
-        this->flyweight->center = this->position;
     }
     this->flyweight->setRenderWireframe(renderWireframe);
     this->flyweight->render(prog, mem);
