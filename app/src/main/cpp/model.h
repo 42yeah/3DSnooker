@@ -35,6 +35,7 @@ public:
 
     // === PUBLIC VARIABLES === //
     glm::mat4 modelMat;
+    glm::vec3 center;
 
 private:
     // === PRIVATE VARIABLES === //
@@ -48,7 +49,7 @@ private:
 class Entity {
 public:
     // === CONSTRUCTORS === //
-    Entity(Model &model);
+    Entity(Model *model);
 
     // === METHODS === //
     void update(float dt);
@@ -61,6 +62,7 @@ public:
     glm::vec3 speed;
     glm::vec3 accerleration;
     bool renderWireframe;
+    bool billboard;
 };
 
 #endif //INC_3DSNOOKER_MODEL_H

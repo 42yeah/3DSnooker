@@ -1,0 +1,12 @@
+# ninja log v5
+1	54	0	build.ninja	f099900a90468588
+1	1287	0	CMakeFiles/native-lib.dir/files.cpp.o	a73b0b13977bdad8
+1	1509	0	CMakeFiles/native-lib.dir/gl_helpers.cpp.o	6366c916490fe517
+0	1909	0	CMakeFiles/native-lib.dir/native-lib.cpp.o	3beb506026df5ef5
+2	1993	0	CMakeFiles/native-lib.dir/model.cpp.o	4237e18847b85e5c
+1993	2260	0	/Users/apple/Projects/3DSnooker/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libnative-lib.so	ad4004c62af0e749
+5	1639	0	CMakeFiles/native-lib.dir/files.cpp.o	a73b0b13977bdad8
+5	1895	0	CMakeFiles/native-lib.dir/gl_helpers.cpp.o	6366c916490fe517
+4	2185	0	CMakeFiles/native-lib.dir/native-lib.cpp.o	3beb506026df5ef5
+5	2277	0	CMakeFiles/native-lib.dir/model.cpp.o	4237e18847b85e5c
+2278	2534	0	/Users/apple/Projects/3DSnooker/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libnative-lib.so	ad4004c62af0e749

@@ -12,12 +12,14 @@
 // === CONSTRUCTORS === //
 Model::Model(Resources *res, std::string path) : modelMat(glm::mat4(1.0f)) {
     importFromFile(res, path);
+    center = { 0.0f, 0.0f, 0.0f };
 }
 
 Model::Model(float *buffer, int n) : modelMat(glm::mat4(1.0f)) {
     this->vertices.insert(this->vertices.end(), buffer, buffer + n);
     this->numVertices = n / AXISES;
     this->numIndices = 0;
+    center = { 0.0f, 0.0f, 0.0f };
 }
 
 // === METHODS === //
@@ -58,6 +60,7 @@ void Model::render(Program &prog, Memory &mem) {
     glVertexAttribPointer(prog.aColorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, &this->vertices[3]);
     glVertexAttribPointer(prog.aUVLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, &this->vertices[6]);
     glUniformMatrix4fv(prog.modelLocation, 1, GL_FALSE, value_ptr(this->modelMat));
+    glUniform3fv(prog.centerLocation, 1, value_ptr(this->center));
     if (this->numIndices > 0) {
         if (renderWireframe) {
             glDisable(GL_DEPTH_TEST);
@@ -84,8 +87,10 @@ void Model::setRenderWireframe(bool wireframe) {
 
 // === ENTITY === //
 // === CONSTURCTORS === //
-Entity::Entity(Model &model) {
-    this->flyweight = &model;
+Entity::Entity(Model *model) {
+    this->flyweight = model;
+    this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this->billboard = false;
 }
 
 // === METHODS === //
@@ -95,10 +100,15 @@ void Entity::update(float dt) {
 
 void Entity::render(Program &prog, Memory &mem) {
     this->flyweight->modelMat = glm::mat4(1.0f);
-    this->flyweight->modelMat = glm::translate(
-            this->flyweight->modelMat,
-            this->position
-    );
+    this->flyweight->center = glm::vec3(0.0f, 0.0f, 0.0f);
+    if (!this->billboard) {
+        this->flyweight->modelMat = glm::translate(
+                this->flyweight->modelMat,
+                this->position
+        );
+    } else {
+        this->flyweight->center = this->position;
+    }
     this->flyweight->setRenderWireframe(renderWireframe);
     this->flyweight->render(prog, mem);
 }

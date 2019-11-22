@@ -1,0 +1,72 @@
+{
+  "variant": {
+    "module": {
+      "rootBuildGradleFolder": "/Users/apple/Projects/3DSnooker",
+      "sdkFolder": "/Users/apple/Library/Android/sdk",
+      "isNativeCompilerSettingsCacheEnabled": false,
+      "isBuildOnlyTargetAbiEnabled": true,
+      "splitsAbiFilterSet": [],
+      "intermediatesFolder": "/Users/apple/Projects/3DSnooker/app/build/intermediates",
+      "gradleModulePathName": ":app",
+      "moduleRootFolder": "/Users/apple/Projects/3DSnooker/app",
+      "makeFile": "/Users/apple/Projects/3DSnooker/app/src/main/cpp/CMakeLists.txt",
+      "buildSystem": "CMAKE",
+      "compilerSettingsCacheFolder": "/Users/apple/Projects/3DSnooker/.cxx",
+      "cxxFolder": "/Users/apple/Projects/3DSnooker/app/.cxx",
+      "ndkFolder": "/Users/apple/Library/Android/sdk/ndk/21.0.5935234",
+      "ndkVersion": "21.0.5935234",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "cmakeToolchainFile": "."
+    },
+    "buildSystemArgumentList": [],
+    "cFlagList": [],
+    "cppFlagsList": [
+      ""
+    ],
+    "variantName": "debug",
+    "soFolder": "/Users/apple/Projects/3DSnooker/app/build/intermediates/cmake/debug/lib",
+    "objFolder": "/Users/apple/Projects/3DSnooker/app/build/intermediates/cmake/debug/obj",
+    "jsonFolder": "/Users/apple/Projects/3DSnooker/app/.cxx/cmake/debug",
+    "gradleBuildOutputFolder": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug",
+    "isDebuggableEnabled": true,
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
+    ],
+    "buildTargetSet": []
+  },
+  "abi": "X86_64",
+  "abiPlatformVersion": 16,
+  "cxxBuildFolder": "/Users/apple/Projects/3DSnooker/app/.cxx/cmake/debug/x86_64",
+  "jsonFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cmake/debug/x86_64/android_gradle_build.json",
+  "gradleBuildOutputFolder": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug/x86_64",
+  "objFolder": "/Users/apple/Projects/3DSnooker/app/build/intermediates/cmake/debug/obj/x86_64",
+  "buildCommandFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cmake/debug/x86_64/build_command.txt",
+  "buildOutputFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cmake/debug/x86_64/build_output.txt",
+  "modelOutputFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cmake/debug/x86_64/build_model.json",
+  "cmake": {
+    "cmakeListsWrapperFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug/x86_64/CMakeLists.txt",
+    "toolchainWrapperFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug/x86_64/android_gradle_build.toolchain.cmake",
+    "buildGenerationStateFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug/x86_64/build_generation_state.json",
+    "cacheKeyFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug/x86_64/compiler_cache_key.json",
+    "compilerCacheUseFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug/x86_64/compiler_cache_use.json",
+    "compilerCacheWriteFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug/x86_64/compiler_cache_write.json",
+    "toolchainSettingsFromCacheFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cxx/debug/x86_64/compiler_settings_cache.cmake",
+    "cmakeWrappingBaseFolder": "."
+  },
+  "jsonGenerationLoggingRecordFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cmake/debug/x86_64/json_generation_record.json",
+  "compileCommandsJsonFile": "/Users/apple/Projects/3DSnooker/app/.cxx/cmake/debug/x86_64/compile_commands.json"
+}

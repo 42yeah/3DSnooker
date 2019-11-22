@@ -59,9 +59,10 @@ glm::mat4 getViewMatrixByOFU(glm::vec3 origin, glm::vec3 front, glm::vec3 up) {
 }
 
 glm::vec3 getViewSphere(float pitch, float yaw) {
-    float x = sinf(yaw) * 5.0f;
-    float y = sinf(pitch) * 5.0f;
-    float z = cosf(yaw) * cosf(pitch) * 5.0f;
+    float modifier = cosf(pitch);
+    float x = modifier * 2.0f * sinf(yaw);
+    float y = 2.0f * sinf(pitch);
+    float z = modifier * 2.0f * cosf(yaw);
     return glm::vec3(x, y, z);
 }
 
@@ -97,6 +98,10 @@ void Program::init() {
     this->modelLocation = (GLuint) glGetUniformLocation(
             prog,
             "model"
+    );
+    this->centerLocation = (GLuint) glGetUniformLocation(
+            prog,
+            "center"
     );
 }
 

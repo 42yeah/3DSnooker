@@ -50,7 +50,10 @@ public:
 
     // === ENTITIES === //
     std::vector<Entity> holes;
-    std::vector<glm::vec3> holePositions;
+
+    // === MATHY STUFFS === //
+    float pi;
+    float dx;
 
     // === TEST VARIABLES === //
     Model testModel;

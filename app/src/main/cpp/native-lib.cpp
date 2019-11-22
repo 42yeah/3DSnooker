@@ -6,6 +6,7 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include <chrono>
+#include <cmath>
 #include "files.h"
 #include "memory.h"
 #include "gl_helpers.h"
@@ -53,6 +54,11 @@ Java_aiofwa_org_a3dsnooker_game_Engine_motionEvent(JNIEnv *env, jobject instance
             memory.pitch = memory.pitchBase + dy * 5.0f;
             break;
     }
+    if (memory.pitch >= (memory.pi - memory.dx) / 2.0f) {
+        memory.pitch = (memory.pi - memory.dx) / 2.0f;
+    } else if (memory.pitch <= -(memory.pi - memory.dx) / 2.0f) {
+        memory.pitch = -(memory.pi - memory.dx) / 2.0f;
+    }
 
 //    LOG("Action: %d %f %f. Pitch & Yaw: %f %f", action, x, y, memory.pitch, memory.yaw);
 }
@@ -93,12 +99,23 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobje
     memory.ball = Model(resources, "models/Ball.model");
     memory.hole = Model(resources, "models/Hole.model");
 
-    Entity holeEntity(memory.hole);
-    memory.holes.push_back(holeEntity);
+    glm::vec3 holePositions[] = {
+            { 0.0f, 0.0f, 0.0f },
+            { 0.5f, 0.0f, 0.0f },
+            { 0.0f, 0.0f, 0.5f },
+            { 0.5f, 0.0f, 0.5f },
+            { 0.0f, 1.0f, 0.0f },
+            { 0.5f, 1.0f, 0.0f },
+            { 0.0f, 1.0f, 0.5f },
+            { 0.5f, 1.0f, 0.5f },
+    };
+    for (const glm::vec3 holePos : holePositions) {
+        Entity holeEntity(&memory.hole);
+        holeEntity.position = holePos;
+        holeEntity.billboard = true;
+        memory.holes.push_back(holeEntity);
+    }
 
-    memory.holePositions = std::vector<glm::vec3>({
-
-    });
 
     // === CAMERAS === //
     memory.front = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -106,6 +123,10 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobje
     memory.origin = glm::vec3(0.15f, 0.7f, 2.0f);
     memory.pitch = 0.0f;
     memory.yaw = 0.0f;
+
+    // === MATHY STUFFS === //
+    memory.pi = NK_PI;
+    memory.dx = 0.0001f;
 
     // === TESTS === //
     memory.testModel = Model(resources, "models/TestCube.model");
@@ -129,11 +150,12 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject insta
     memory.deltaTime = (float) (thisInstant - memory.lastInstant) / 1000.0f;
     memory.lastInstant = thisInstant;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//    memory.viewMat = getViewMatrixByOFU(memory.origin, memory.front, memory.up);
 
     // === TESTS === //
     // memory.testModel.render(memory.prog, memory);
     // memory.rotationDegree += memory.deltaTime * 1.0f;
+
+    // === CAMERA === //
     memory.viewMat = glm::lookAt(
             getViewSphere(memory.pitch, memory.yaw),
             glm::vec3(0.25f, 0.5f, 0.25f),

@@ -5,13 +5,15 @@ attribute vec2 aUV;
 
 // === UNIFORMS === //
 uniform mat4 view, perspective, model;
+uniform vec3 center;
 
 // === VARYING === //
 varying vec3 vColor;
 varying vec2 vUV;
 
 void main() {
-    gl_Position = perspective * view * model * vec4(aPos, 1.0);
+    vec3 pos = aPos + center;
+    gl_Position = perspective * view * model * vec4(pos, 1.0);
     // Stall it from being optimized away
     vColor = aColor;
     vUV = aUV;

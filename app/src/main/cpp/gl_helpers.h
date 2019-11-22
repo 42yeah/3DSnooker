@@ -36,7 +36,7 @@ glm::vec3 getViewSphere(float pitch, float yaw);
 
 class Program {
 public:
-    // === CONSTURCTORS === //
+    // === CONSTRUCTORS === //
     Program() = default;
     Program(GLuint prog);
 
@@ -51,6 +51,7 @@ public:
     GLuint prog;
     GLuint aPosLocation, aColorLocation, aUVLocation;
     GLuint viewLocation, perspectiveLocation, modelLocation;
+    GLuint centerLocation;
 };
 
 #endif //INC_3DSNOOKER_GL_HELPERS_H
