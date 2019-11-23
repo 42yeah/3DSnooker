@@ -479,6 +479,7 @@
 		1816FC8023890656008B9476 /* StandardProgram.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = StandardProgram.hpp; sourceTree = "<group>"; };
 		1816FC8423890880008B9476 /* testTriangle.vertex.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = testTriangle.vertex.glsl; sourceTree = "<group>"; };
 		1816FC8523890924008B9476 /* testTriangle.fragment.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = testTriangle.fragment.glsl; sourceTree = "<group>"; };
+		1816FC86238911BD008B9476 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -496,6 +497,7 @@
 		1816F9A023881182008B9476 = {
 			isa = PBXGroup;
 			children = (
+				1816FC86238911BD008B9476 /* README.md */,
 				1816FC8223890846008B9476 /* Assets */,
 				1816F9BA238812F0008B9476 /* Ext */,
 				1816F9AB23881182008B9476 /* Snooker3D */,
