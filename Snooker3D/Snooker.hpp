@@ -27,13 +27,20 @@ public:
     
     // === TEST CODES === //
     void renderTestTriangle();
+    void renderTestSuzzane();
+    void renderTestCube();
 
 private:
     WindowWrapper *windowWrapper;
+    glm::mat4 globalRotation;
     
+    GLuint poolTableVAO;
+
     // === TEST DATA === //
     GLuint testTriangleVAO, testTriangleVBO;
     StandardProgram testTriangleProgram;
+    
+    GLuint testCubeVAO;
 };
 
 #endif /* Snooker_hpp */

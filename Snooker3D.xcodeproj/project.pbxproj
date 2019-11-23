@@ -480,6 +480,9 @@
 		1816FC8423890880008B9476 /* testTriangle.vertex.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = testTriangle.vertex.glsl; sourceTree = "<group>"; };
 		1816FC8523890924008B9476 /* testTriangle.fragment.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = testTriangle.fragment.glsl; sourceTree = "<group>"; };
 		1816FC86238911BD008B9476 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1816FC8723891409008B9476 /* tiny_obj_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tiny_obj_loader.h; sourceTree = "<group>"; };
+		1816FC88238919E8008B9476 /* suzzane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzzane.obj; sourceTree = "<group>"; };
+		1816FC8923891B3C008B9476 /* suzzane.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzzane.mtl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -544,6 +547,7 @@
 		1816F9BA238812F0008B9476 /* Ext */ = {
 			isa = PBXGroup;
 			children = (
+				1816FC8723891409008B9476 /* tiny_obj_loader.h */,
 				1816FAFB2388DBAC008B9476 /* glm */,
 				1816F9D223882661008B9476 /* imgui */,
 				1816F9BB238812F0008B9476 /* KHR */,
@@ -1102,6 +1106,8 @@
 		1816FC8223890846008B9476 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				1816FC8923891B3C008B9476 /* suzzane.mtl */,
+				1816FC88238919E8008B9476 /* suzzane.obj */,
 				1816FC8423890880008B9476 /* testTriangle.vertex.glsl */,
 				1816FC8523890924008B9476 /* testTriangle.fragment.glsl */,
 			);
@@ -1187,10 +1193,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1816FABC23882661008B9476 /* imgui.cpp in Sources */,
 				1816FAEF23882661008B9476 /* imgui_draw.cpp in Sources */,
-				1816FABB23882661008B9476 /* imgui_widgets.cpp in Sources */,
+				1816FABC23882661008B9476 /* imgui.cpp in Sources */,
 				1816FAB923882661008B9476 /* imgui_stdlib.cpp in Sources */,
+				1816FABB23882661008B9476 /* imgui_widgets.cpp in Sources */,
 				1816FAF723882818008B9476 /* imgui_impl_opengl3.cpp in Sources */,
 				1816FAFA2388D61F008B9476 /* imgui_impl_glfw.cpp in Sources */,
 				1816FAEE23882661008B9476 /* imgui_demo.cpp in Sources */,
