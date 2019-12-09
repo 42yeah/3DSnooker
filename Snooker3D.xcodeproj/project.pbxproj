@@ -23,6 +23,7 @@
 		1816FC782388DBAD008B9476 /* glm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1816FBBB2388DBAC008B9476 /* glm.cpp */; };
 		1816FC7E23890304008B9476 /* Snooker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1816FC7C23890304008B9476 /* Snooker.cpp */; };
 		1816FC8123890656008B9476 /* StandardProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1816FC7F23890656008B9476 /* StandardProgram.cpp */; };
+		18226E2B239E18F200282C60 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18226E29239E18F200282C60 /* Model.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -483,6 +484,8 @@
 		1816FC8723891409008B9476 /* tiny_obj_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tiny_obj_loader.h; sourceTree = "<group>"; };
 		1816FC88238919E8008B9476 /* suzzane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzzane.obj; sourceTree = "<group>"; };
 		1816FC8923891B3C008B9476 /* suzzane.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzzane.mtl; sourceTree = "<group>"; };
+		18226E29239E18F200282C60 /* Model.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
+		18226E2A239E18F200282C60 /* Model.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Model.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -530,6 +533,8 @@
 				1816FC7D23890304008B9476 /* Snooker.hpp */,
 				1816FC7F23890656008B9476 /* StandardProgram.cpp */,
 				1816FC8023890656008B9476 /* StandardProgram.hpp */,
+				18226E29239E18F200282C60 /* Model.cpp */,
+				18226E2A239E18F200282C60 /* Model.hpp */,
 			);
 			path = Snooker3D;
 			sourceTree = "<group>";
@@ -1205,6 +1210,7 @@
 				1816F9CE23882051008B9476 /* Game.cpp in Sources */,
 				1816F9AD23881182008B9476 /* main.cpp in Sources */,
 				1816F9B9238812E7008B9476 /* glad.c in Sources */,
+				18226E2B239E18F200282C60 /* Model.cpp in Sources */,
 				1816FC7E23890304008B9476 /* Snooker.cpp in Sources */,
 				1816F9D123882148008B9476 /* WindowWrapper.cpp in Sources */,
 			);

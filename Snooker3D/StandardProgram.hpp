@@ -11,6 +11,9 @@
 
 #include "../Ext/glad/glad.h"
 #include <iostream>
+#include "../Ext/glm/glm.hpp"
+#include "../Ext/glm/gtc/matrix_transform.hpp"
+#include "../Ext/glm/gtc/type_ptr.hpp"
 
 
 /**
@@ -25,9 +28,13 @@ public:
     void link(std::string vertexShaderPath, std::string fragmentShaderPath);
     GLuint compile(GLuint shaderType, std::string shaderPath);
     void use();
+    void applyMVP(glm::mat4 model, glm::mat4 view, glm::mat4 perspec);
 
 private:
     GLuint program;
+    
+    // === LOCATIONS === //
+    GLuint modelLoc, viewLoc, perspectiveLoc;
 };
 
 #endif /* StandardProgram_hpp */

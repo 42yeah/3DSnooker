@@ -24,6 +24,7 @@ public:
     void renderHoles();
     void renderBalls();
     void renderCueStick();
+    void applyRegularCamera();
     
     // === TEST CODES === //
     void renderTestTriangle();
@@ -35,6 +36,9 @@ private:
     glm::mat4 globalRotation;
     
     GLuint poolTableVAO;
+    
+    // === CAMERA === //
+    glm::mat4 view, perspective;
 
     // === TEST DATA === //
     GLuint testTriangleVAO, testTriangleVBO;

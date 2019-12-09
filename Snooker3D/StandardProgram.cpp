@@ -20,6 +20,11 @@ void StandardProgram::link(std::string vertexShaderPath, std::string fragmentSha
     glGetProgramInfoLog(program, sizeof(log), nullptr, log);
     std::cout << "Program: " << log << std::endl;
     this->program = program;
+    
+    // === INITIALIZE LOCATION VARIABLES === //
+    this->modelLoc = glGetUniformLocation(this->program, "model");
+    this->viewLoc = glGetUniformLocation(this->program, "view");
+    this->perspectiveLoc = glGetUniformLocation(this->program, "perspective");
 }
 
 GLuint StandardProgram::compile(GLuint shaderType, std::string shaderPath) { 
@@ -40,3 +45,11 @@ GLuint StandardProgram::compile(GLuint shaderType, std::string shaderPath) {
 void StandardProgram::use() {
     glUseProgram(this->program);
 }
+
+void StandardProgram::applyMVP(glm::mat4 model, glm::mat4 view, glm::mat4 perspec) { 
+    this->use();
+    glUniformMatrix4fv(this->modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(this->viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(this->perspectiveLoc, 1, GL_FALSE, glm::value_ptr(perspec));
+}
+

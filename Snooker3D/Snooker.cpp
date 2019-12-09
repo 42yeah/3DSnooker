@@ -8,8 +8,10 @@
 
 #include "Snooker.hpp"
 #include "../Ext/glad/glad.h"
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "../Ext/tiny_obj_loader.h"
+#include "../Ext/glm/glm.hpp"
+#include "../Ext/glm/gtc/matrix_transform.hpp"
+#include "../Ext/glm/gtc/type_ptr.hpp"
+#include "Model.hpp"
 
 
 Snooker::Snooker(WindowWrapper *wrapper) : windowWrapper(wrapper) {
@@ -39,33 +41,13 @@ void Snooker::init() {
         0.5f, 0.0f, 0.0f,
         0.0f, 0.5f, 0.0f
     };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(testTriangleData), testData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(testTriangleData), testTriangleData, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
-    
-    glGenVertexArrays(1, &testCubeVAO);
-    GLuint testCubeVBO;
-    glGenBuffers(1, &testTriangleVBO);
-    glBindVertexArray(testCubeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, testCubeVBO);
-    float testCubeData[] = {
-        
-    };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(testCubeData), testData, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
-    
-    tinyobj::attrib_t attributes;
-    std::vector<tinyobj::shape_t> shapes;
-    std::vector<tinyobj::material_t> materials;
-    std::string warnings;
-    std::string errors;
-    tinyobj::LoadObj(&attributes, &shapes, &materials, &warnings, &errors, "Assets/suzzane.obj", "Assets");
-    for (int i = 0; i < shapes.size(); i++) {
-        tinyobj::shape_t shape = shapes[i];
-        std::cout << shapes[i] << std::endl;
-    }
-    std::cout << "Model loading done: " << warnings << ", " << errors << std::endl;
+
+    // === LET'S LOAD SUZZANE === //
+    Model suzzane("Assets/suzzane.obj", "Assets");
+    suzzane.load();
 }
 
 void Snooker::renderSkybox() {
@@ -102,3 +84,15 @@ void Snooker::renderTestSuzzane() {
 void Snooker::renderTestCube() {
     
 }
+
+void Snooker::applyRegularCamera() { 
+    view = glm::lookAt(glm::vec3(2.0f, 1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    perspective = glm::perspective(glm::radians(45.0f),
+                                   windowWrapper->getFrameBufferSize().x / windowWrapper->getFrameBufferSize().y,
+                                   0.01f,
+                                   200.0f);
+
+    // === APPLY TO TEST SHADER === //
+    testTriangleProgram.applyMVP(glm::mat4(1.0f), view, perspective);
+}
+
