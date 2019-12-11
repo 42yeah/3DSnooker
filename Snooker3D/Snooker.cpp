@@ -37,21 +37,27 @@ void Snooker::init() {
     glBindVertexArray(testTriangleVAO);
     glBindBuffer(GL_ARRAY_BUFFER, testTriangleVBO);
     float testTriangleData[] = {
-        0.0f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.0f, 0.5f, 0.0f
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
     };
     glBufferData(GL_ARRAY_BUFFER, sizeof(testTriangleData), testTriangleData, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, nullptr);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *) (sizeof(float) * 3));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *) (sizeof(float) * 6));
+    
+    glEnable(GL_DEPTH_TEST);
 
-    // === LET'S LOAD SUZZANE === //
-    Model suzzane("Assets/suzzane.obj", "Assets");
-    suzzane.load();
+    // === LET'S LOAD suzanne === //
+    testsuzanne = Model("Assets/suzanne.obj", "Assets");
+    testsuzanne.load();
 }
 
 void Snooker::renderSkybox() {
-    glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -77,16 +83,19 @@ void Snooker::renderTestTriangle() {
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-void Snooker::renderTestSuzzane() {
-    
+void Snooker::renderTestsuzanne() {
+    testsuzanne.render(testTriangleProgram);
 }
 
 void Snooker::renderTestCube() {
     
 }
 
-void Snooker::applyRegularCamera() { 
-    view = glm::lookAt(glm::vec3(2.0f, 1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+float t = 0.0f;
+
+void Snooker::applyRegularCamera() {
+    t += 0.001f;
+    view = glm::lookAt(glm::vec3(-5.0f * cosf(t), 1.0f, -5.0f * sinf(t)), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     perspective = glm::perspective(glm::radians(45.0f),
                                    windowWrapper->getFrameBufferSize().x / windowWrapper->getFrameBufferSize().y,
                                    0.01f,

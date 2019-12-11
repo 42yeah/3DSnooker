@@ -11,6 +11,7 @@
 
 #include "WindowWrapper.hpp"
 #include "StandardProgram.hpp"
+#include "Model.hpp"
 
 
 class Snooker {
@@ -28,7 +29,7 @@ public:
     
     // === TEST CODES === //
     void renderTestTriangle();
-    void renderTestSuzzane();
+    void renderTestsuzanne();
     void renderTestCube();
 
 private:
@@ -43,6 +44,7 @@ private:
     // === TEST DATA === //
     GLuint testTriangleVAO, testTriangleVBO;
     StandardProgram testTriangleProgram;
+    Model testsuzanne;
     
     GLuint testCubeVAO;
 };

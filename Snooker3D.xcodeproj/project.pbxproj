@@ -482,8 +482,8 @@
 		1816FC8523890924008B9476 /* testTriangle.fragment.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = testTriangle.fragment.glsl; sourceTree = "<group>"; };
 		1816FC86238911BD008B9476 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1816FC8723891409008B9476 /* tiny_obj_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tiny_obj_loader.h; sourceTree = "<group>"; };
-		1816FC88238919E8008B9476 /* suzzane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzzane.obj; sourceTree = "<group>"; };
-		1816FC8923891B3C008B9476 /* suzzane.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzzane.mtl; sourceTree = "<group>"; };
+		1816FC88238919E8008B9476 /* suzanne.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzanne.obj; sourceTree = "<group>"; };
+		1816FC8923891B3C008B9476 /* suzanne.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzanne.mtl; sourceTree = "<group>"; };
 		18226E29239E18F200282C60 /* Model.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
 		18226E2A239E18F200282C60 /* Model.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Model.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1111,8 +1111,8 @@
 		1816FC8223890846008B9476 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				1816FC8923891B3C008B9476 /* suzzane.mtl */,
-				1816FC88238919E8008B9476 /* suzzane.obj */,
+				1816FC8923891B3C008B9476 /* suzanne.mtl */,
+				1816FC88238919E8008B9476 /* suzanne.obj */,
 				1816FC8423890880008B9476 /* testTriangle.vertex.glsl */,
 				1816FC8523890924008B9476 /* testTriangle.fragment.glsl */,
 			);
