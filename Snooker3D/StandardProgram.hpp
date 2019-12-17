@@ -15,6 +15,7 @@
 #include "../Ext/glm/gtc/matrix_transform.hpp"
 #include "../Ext/glm/gtc/type_ptr.hpp"
 
+class Texture;
 
 /**
  Explanation about why it being "standard":
@@ -28,13 +29,20 @@ public:
     void link(std::string vertexShaderPath, std::string fragmentShaderPath);
     GLuint compile(GLuint shaderType, std::string shaderPath);
     void use();
-    void applyMVP(glm::mat4 model, glm::mat4 view, glm::mat4 perspec);
+    void applyM(glm::mat4 model);
+    void applyVP(glm::mat4 view, glm::mat4 perspec);
+    void applyTexture(Texture *ambient, Texture *diffuse, Texture *specular);
 
 private:
     GLuint program;
     
     // === LOCATIONS === //
     GLuint modelLoc, viewLoc, perspectiveLoc;
+    GLuint texturizeLoc, ambientLoc, diffuseLoc, specularLoc;
+    
+public:
+    // === TESTING LOC === //
+    GLuint timeLoc;
 };
 
 #endif /* StandardProgram_hpp */

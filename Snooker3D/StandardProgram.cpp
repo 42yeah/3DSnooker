@@ -9,6 +9,7 @@
 #include "StandardProgram.hpp"
 #include <fstream>
 #include <sstream>
+#include "Model.hpp"
 
 
 void StandardProgram::link(std::string vertexShaderPath, std::string fragmentShaderPath) {
@@ -25,6 +26,12 @@ void StandardProgram::link(std::string vertexShaderPath, std::string fragmentSha
     this->modelLoc = glGetUniformLocation(this->program, "model");
     this->viewLoc = glGetUniformLocation(this->program, "view");
     this->perspectiveLoc = glGetUniformLocation(this->program, "perspective");
+    this->texturizeLoc = glGetUniformLocation(this->program, "texturize");
+    this->ambientLoc = glGetUniformLocation(this->program, "ambientTexture");
+//    this->diffuseLoc = glGetUniformLocation(this->program, "diffuseTexture");
+//    this->specularLoc = glGetUniformLocation(this->program, "specularTexture");
+    
+    this->timeLoc = glGetUniformLocation(this->program, "time");
 }
 
 GLuint StandardProgram::compile(GLuint shaderType, std::string shaderPath) { 
@@ -46,10 +53,30 @@ void StandardProgram::use() {
     glUseProgram(this->program);
 }
 
-void StandardProgram::applyMVP(glm::mat4 model, glm::mat4 view, glm::mat4 perspec) { 
+void StandardProgram::applyM(glm::mat4 model) {
     this->use();
     glUniformMatrix4fv(this->modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+}
+
+void StandardProgram::applyVP(glm::mat4 view, glm::mat4 perspec) {
+    this->use();
     glUniformMatrix4fv(this->viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(this->perspectiveLoc, 1, GL_FALSE, glm::value_ptr(perspec));
 }
+
+void StandardProgram::applyTexture(Texture *ambient, Texture *diffuse, Texture *specular) {
+    this->use();
+    if (ambient->isValid()) {
+        glUniform1i(this->texturizeLoc, 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, ambient->glTexture);
+    }
+//    glActiveTexture(GL_TEXTURE1);
+//    glBindTexture(GL_TEXTURE_2D, ambient->glTexture);
+//    glUniform1i(this->diffuseLoc, 1);
+//    glActiveTexture(GL_TEXTURE2);
+//    glBindTexture(GL_TEXTURE_2D, ambient->glTexture);
+//    glUniform1i(this->specularLoc, 2);
+}
+
 

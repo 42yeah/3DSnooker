@@ -51,9 +51,9 @@ void Snooker::init() {
     
     glEnable(GL_DEPTH_TEST);
 
-    // === LET'S LOAD suzanne === //
-    testsuzanne = Model("Assets/suzanne.obj", "Assets");
-    testsuzanne.load();
+    billiardTable = Model("Assets/10523_Pool_Table_v1_L3.obj", "Assets");
+    billiardTable.load();
+    billiardTable.modelMatrix = glm::rotate(billiardTable.modelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 void Snooker::renderSkybox() {
@@ -62,7 +62,7 @@ void Snooker::renderSkybox() {
 }
 
 void Snooker::renderTable() {
-    
+    billiardTable.render(testTriangleProgram);
 }
 
 void Snooker::renderHoles() {
@@ -83,10 +83,6 @@ void Snooker::renderTestTriangle() {
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-void Snooker::renderTestsuzanne() {
-    testsuzanne.render(testTriangleProgram);
-}
-
 void Snooker::renderTestCube() {
     
 }
@@ -95,13 +91,13 @@ float t = 0.0f;
 
 void Snooker::applyRegularCamera() {
     t += 0.001f;
-    view = glm::lookAt(glm::vec3(-5.0f * cosf(t), 1.0f, -5.0f * sinf(t)), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(glm::vec3(-256.0f * cosf(t), 200.0f, -256.0f * sinf(t)), glm::vec3(0.0f, 50.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     perspective = glm::perspective(glm::radians(45.0f),
                                    windowWrapper->getFrameBufferSize().x / windowWrapper->getFrameBufferSize().y,
                                    0.01f,
-                                   200.0f);
+                                   2000.0f);
 
     // === APPLY TO TEST SHADER === //
-    testTriangleProgram.applyMVP(glm::mat4(1.0f), view, perspective);
+    testTriangleProgram.applyVP(view, perspective);
 }
 

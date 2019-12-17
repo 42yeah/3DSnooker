@@ -14,6 +14,30 @@
 #include "StandardProgram.hpp"
 
 
+// === HELPER CLASS === //
+class Vertex {
+public:
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec2 texCoord;
+};
+
+class Texture {
+public:
+    Texture() {}
+    Texture(std::string filename);
+    
+    void load();
+    bool isValid();
+    
+    GLuint glTexture;
+    int w, h, channels;
+    std::string filename;
+    bool valid;
+};
+
+
+// === LA REAL THANG === //
 class Model {
 public:
     Model() {}
@@ -27,14 +51,10 @@ public:
     std::string modelMtlBaseDir;
     GLuint VAO;
     int numVertices;
-};
-
-// === HELPER CLASS === //
-class Vertex {
-public:
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 texCoord;
+    
+    Texture ambientTexture, diffuseTexture, specularTexture;
+    
+    glm::mat4 modelMatrix;
 };
 
 #endif /* Model_hpp */

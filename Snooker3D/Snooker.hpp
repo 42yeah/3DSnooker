@@ -29,7 +29,6 @@ public:
     
     // === TEST CODES === //
     void renderTestTriangle();
-    void renderTestsuzanne();
     void renderTestCube();
 
 private:
@@ -40,11 +39,13 @@ private:
     
     // === CAMERA === //
     glm::mat4 view, perspective;
+    
+    // === SERIOUS DATA === //
+    Model billiardTable;
 
     // === TEST DATA === //
     GLuint testTriangleVAO, testTriangleVBO;
     StandardProgram testTriangleProgram;
-    Model testsuzanne;
     
     GLuint testCubeVAO;
 };

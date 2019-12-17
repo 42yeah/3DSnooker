@@ -486,6 +486,7 @@
 		1816FC8923891B3C008B9476 /* suzanne.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzanne.mtl; sourceTree = "<group>"; };
 		18226E29239E18F200282C60 /* Model.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
 		18226E2A239E18F200282C60 /* Model.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Model.hpp; sourceTree = "<group>"; };
+		1891864023A231B6001DC10A /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -552,6 +553,7 @@
 		1816F9BA238812F0008B9476 /* Ext */ = {
 			isa = PBXGroup;
 			children = (
+				1891864023A231B6001DC10A /* stb_image.h */,
 				1816FC8723891409008B9476 /* tiny_obj_loader.h */,
 				1816FAFB2388DBAC008B9476 /* glm */,
 				1816F9D223882661008B9476 /* imgui */,
