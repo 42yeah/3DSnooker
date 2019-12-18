@@ -85,7 +85,6 @@ void Game::startGame() {
 
         snooker.applyRegularCamera();
         snooker.renderSkybox();
-        snooker.renderTestTriangle();
         snooker.renderTestCube();
         snooker.renderTable();
 //        snooker.renderTable();

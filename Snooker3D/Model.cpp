@@ -36,7 +36,7 @@ void Model::load() {
     if (materials.size() > 0) {
         // There IS texture!
         tinyobj::material_t &material = materials[0];
-        ambientTexture = Texture(modelMtlBaseDir + "/" + material.ambient_texname);
+        ambientTexture = Texture(modelMtlBaseDir + "/" + material.diffuse_texname);
         ambientTexture.load();
         textureWidth = ambientTexture.w;
         textureHeight = ambientTexture.h;
@@ -50,19 +50,25 @@ void Model::load() {
     for (int i = 0; i < shapes.size(); i ++) {
         tinyobj::shape_t &shape = shapes[i];
         tinyobj::mesh_t &mesh = shape.mesh;
-        for (int j = 0; j < mesh.indices.size(); j++) {
+        std::cout << "Processing: " << modelName << ", shape #" << i << ", #indices " << mesh.indices.size() << std::endl;
+        for (long j = 0; j < mesh.indices.size(); j++) {
             tinyobj::index_t i = mesh.indices[j];
             glm::vec3 position = {
                 attributes.vertices[i.vertex_index * 3],
                 attributes.vertices[i.vertex_index * 3 + 1],
                 attributes.vertices[i.vertex_index * 3 + 2]
             };
+            if (position.y > 0.01f && fabs(position.x) < 0.5f && fabs(position.z) < 0.5f) {
+                std::cout << position.x << ", " << position.y << ", " << position.z << std::endl;
+            }
             glm::vec3 normal = {
                 attributes.normals[i.normal_index * 3],
                 attributes.normals[i.normal_index * 3 + 1],
                 attributes.normals[i.normal_index * 3 + 2]
             };
             glm::vec2 texCoord = {
+//                (float) j / mesh.indices.size(),
+//                (float) (1.0f - j / mesh.indices.size()),
                 attributes.texcoords[i.texcoord_index * 2],
                 attributes.texcoords[i.texcoord_index * 2 + 1],
             };
@@ -112,13 +118,14 @@ void Texture::load() {
         valid = false;
         return;
     }
+    std::cout << "Loading texture " << filename.c_str() << std::endl;
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
     valid = true;
