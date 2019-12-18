@@ -18,10 +18,6 @@ Snooker::Snooker(WindowWrapper *wrapper) : windowWrapper(wrapper) {
     
 }
 
-void Snooker::update() {
-    
-}
-
 void Snooker::init() {
     globalRotation = glm::mat4(1.0f);
     
@@ -29,7 +25,7 @@ void Snooker::init() {
 
     
     // === TEST DATA === //
-    testTriangleProgram.link("Assets/testTriangle.vertex.glsl",
+    program.link("Assets/testTriangle.vertex.glsl",
                              "Assets/testTriangle.fragment.glsl");
     
     glGenVertexArrays(1, &testTriangleVAO);
@@ -51,8 +47,35 @@ void Snooker::init() {
     
     glEnable(GL_DEPTH_TEST);
 
-    billiardTable = Model("Assets/PoolTable.obj", "Assets");
-    billiardTable.load();
+    billiardTable = Model("Assets/PoolTable/PoolTable.obj", "Assets/PoolTable");
+    billiardTable.load(-1, &textureStore);
+    loadBallModels();
+    
+    // === TIME === //
+    lastInstant = glfwGetTime();
+    
+    // === ENTITIES === //
+    int indices[] = {
+        0,
+        1, 2, 3, 11, 12, 13, 15,
+        4, 5, 6, 7,   8,  9, 14,
+        10
+    };
+    for (int i = 0; i < 1; i++) {
+        EntityType entityType;
+        if (i == 0) {
+            entityType = SELF;
+        } else if (i >= 1 && i <= 7) {
+            entityType = FRIEND;
+        } else if (i >= 8 && i <= 15) {
+            entityType = FOE;
+        } else {
+            entityType = BLACK;
+        }
+        Entity ball(entityType, &ballModels[indices[i]], glm::vec3(0.0f, 0.0525f + 0.105f * i, 0.0f));
+        ball.velocity = glm::vec3(1.2f, 0.0f, 2.1f);
+        entities.push_back(ball);
+    }
 }
 
 void Snooker::renderSkybox() {
@@ -61,7 +84,10 @@ void Snooker::renderSkybox() {
 }
 
 void Snooker::renderTable() {
-    billiardTable.render(testTriangleProgram);
+    billiardTable.render(program);
+    for (Entity &entity : entities) {
+        entity.render(program);
+    }
 }
 
 void Snooker::renderHoles() {
@@ -77,26 +103,43 @@ void Snooker::renderCueStick() {
 }
 
 void Snooker::renderTestTriangle() { 
-    testTriangleProgram.use();
+    program.use();
     glBindVertexArray(testTriangleVAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-void Snooker::renderTestCube() {
-    
+void Snooker::update() {
+    double thisInstant = glfwGetTime();
+    float deltaTime = (float) (thisInstant - lastInstant);
+    lastInstant = thisInstant;
+    for (int i = 0; i < entities.size(); i++) {
+        Entity &entity = entities[i];
+        entity.update(deltaTime);
+    }
 }
 
 float t = 0.0f;
 
 void Snooker::applyRegularCamera() {
     t += 0.001f;
-    view = glm::lookAt(glm::vec3(-3.0f * cosf(t), 2.0f, -3.0f * sinf(t)), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(glm::vec3(-3.0f * cosf(t), 2.0f, -3.0f * sinf(t)), entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
     perspective = glm::perspective(glm::radians(45.0f),
                                    windowWrapper->getFrameBufferSize().x / windowWrapper->getFrameBufferSize().y,
                                    0.01f,
                                    2000.0f);
 
     // === APPLY TO TEST SHADER === //
-    testTriangleProgram.applyVP(view, perspective);
+    program.applyVP(view, perspective);
 }
+
+void Snooker::loadBallModels() {
+    ballModels.clear();
+    for (int i = 0; i < 16; i++) {
+        Model ballModel = Model("Assets/Balls/Balls.obj", "Assets/Balls");
+        ballModel.load(i, &textureStore);
+        ballModel.modelMatrix = glm::translate(ballModel.modelMatrix, glm::vec3(0.0f, 0.0525f + 0.105f * i, 0.0f));
+        ballModels.push_back(ballModel);
+    }
+}
+
 

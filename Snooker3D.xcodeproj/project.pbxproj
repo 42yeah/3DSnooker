@@ -24,6 +24,7 @@
 		1816FC7E23890304008B9476 /* Snooker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1816FC7C23890304008B9476 /* Snooker.cpp */; };
 		1816FC8123890656008B9476 /* StandardProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1816FC7F23890656008B9476 /* StandardProgram.cpp */; };
 		18226E2B239E18F200282C60 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18226E29239E18F200282C60 /* Model.cpp */; };
+		185553F623AA6851000E228A /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 185553F423AA6851000E228A /* Entity.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -486,6 +487,8 @@
 		1816FC8923891B3C008B9476 /* suzanne.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzanne.mtl; sourceTree = "<group>"; };
 		18226E29239E18F200282C60 /* Model.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
 		18226E2A239E18F200282C60 /* Model.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Model.hpp; sourceTree = "<group>"; };
+		185553F423AA6851000E228A /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
+		185553F523AA6851000E228A /* Entity.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Entity.hpp; sourceTree = "<group>"; };
 		1891864023A231B6001DC10A /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -536,6 +539,8 @@
 				1816FC8023890656008B9476 /* StandardProgram.hpp */,
 				18226E29239E18F200282C60 /* Model.cpp */,
 				18226E2A239E18F200282C60 /* Model.hpp */,
+				185553F423AA6851000E228A /* Entity.cpp */,
+				185553F523AA6851000E228A /* Entity.hpp */,
 			);
 			path = Snooker3D;
 			sourceTree = "<group>";
@@ -1208,6 +1213,7 @@
 				1816FAFA2388D61F008B9476 /* imgui_impl_glfw.cpp in Sources */,
 				1816FAEE23882661008B9476 /* imgui_demo.cpp in Sources */,
 				1816FC782388DBAD008B9476 /* glm.cpp in Sources */,
+				185553F623AA6851000E228A /* Entity.cpp in Sources */,
 				1816FC8123890656008B9476 /* StandardProgram.cpp in Sources */,
 				1816F9CE23882051008B9476 /* Game.cpp in Sources */,
 				1816F9AD23881182008B9476 /* main.cpp in Sources */,

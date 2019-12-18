@@ -10,6 +10,7 @@
 #define Model_hpp
 
 #include <iostream>
+#include <vector>
 #include "../Ext/glm/glm.hpp"
 #include "StandardProgram.hpp"
 
@@ -36,6 +37,12 @@ public:
     bool valid;
 };
 
+class TextureStore {
+public:
+    Texture *load(std::string filename);
+
+    std::vector<Texture *> textures;
+};
 
 // === LA REAL THANG === //
 class Model {
@@ -43,7 +50,7 @@ public:
     Model() {}
     Model(std::string path, std::string mtlBaseDir);
     
-    void load();
+    void load(int index, TextureStore *store);
     void render(StandardProgram &program);
 
     std::string modelName;
@@ -52,7 +59,7 @@ public:
     GLuint VAO;
     int numVertices;
     
-    Texture ambientTexture, diffuseTexture, specularTexture;
+    Texture *ambientTexture, *diffuseTexture, *specularTexture;
     
     glm::mat4 modelMatrix;
 };

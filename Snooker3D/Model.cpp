@@ -21,7 +21,7 @@ Model::Model(std::string path, std::string mtlBaseDir) {
     this->modelMatrix = glm::mat4(1.0f);
 }
 
-void Model::load() {
+void Model::load(int index, TextureStore *store) {
     this->numVertices = 0;
     tinyobj::attrib_t attributes;
     std::vector<tinyobj::shape_t> shapes;
@@ -36,18 +36,21 @@ void Model::load() {
     if (materials.size() > 0) {
         // There IS texture!
         tinyobj::material_t &material = materials[0];
-        ambientTexture = Texture(modelMtlBaseDir + "/" + material.diffuse_texname);
-        ambientTexture.load();
-        textureWidth = ambientTexture.w;
-        textureHeight = ambientTexture.h;
-        diffuseTexture = Texture(modelMtlBaseDir + "/" + material.diffuse_texname);
-        diffuseTexture.load();
-        specularTexture = Texture(modelMtlBaseDir + "/" + material.specular_texname);
-        specularTexture.load();
+        ambientTexture = store->load(modelMtlBaseDir + "/" + material.diffuse_texname);
+        textureWidth = ambientTexture->w;
+        textureHeight = ambientTexture->h;
+        diffuseTexture = store->load(modelMtlBaseDir + "/" + material.diffuse_texname);
+        specularTexture = store->load(modelMtlBaseDir + "/" + material.specular_texname);
     }
 
     std::vector<Vertex> vertices;
-    for (int i = 0; i < shapes.size(); i ++) {
+    int lowerBound = 0;
+    int upperBound = (int) shapes.size();
+    if (index > -1) {
+        lowerBound = index;
+        upperBound = index + 1;
+    }
+    for (int i = lowerBound; i < upperBound; i++) {
         tinyobj::shape_t &shape = shapes[i];
         tinyobj::mesh_t &mesh = shape.mesh;
         std::cout << "Processing: " << modelName << ", shape #" << i << ", #indices " << mesh.indices.size() << std::endl;
@@ -58,9 +61,6 @@ void Model::load() {
                 attributes.vertices[i.vertex_index * 3 + 1],
                 attributes.vertices[i.vertex_index * 3 + 2]
             };
-            if (position.y > 0.01f && fabs(position.x) < 0.5f && fabs(position.z) < 0.5f) {
-                std::cout << position.x << ", " << position.y << ", " << position.z << std::endl;
-            }
             glm::vec3 normal = {
                 attributes.normals[i.normal_index * 3],
                 attributes.normals[i.normal_index * 3 + 1],
@@ -98,7 +98,7 @@ void Model::load() {
 
 void Model::render(StandardProgram &program) {
     program.applyM(modelMatrix);
-    program.applyTexture(&ambientTexture, &diffuseTexture, &specularTexture);
+    program.applyTexture(ambientTexture, diffuseTexture, specularTexture);
     program.use();
     
     glBindVertexArray(VAO);
@@ -133,4 +133,16 @@ void Texture::load() {
 
 bool Texture::isValid() {
     return valid;
+}
+
+Texture *TextureStore::load(std::string filename) {
+    for (int i = 0; i < textures.size(); i++) {
+        if (textures[i]->filename == filename) {
+            return textures[i];
+        }
+    }
+    Texture *newTexture = new Texture(filename);
+    newTexture->load();
+    textures.push_back(newTexture);
+    return newTexture;
 }
