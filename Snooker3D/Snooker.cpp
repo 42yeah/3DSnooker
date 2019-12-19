@@ -12,6 +12,7 @@
 #include "../Ext/glm/gtc/matrix_transform.hpp"
 #include "../Ext/glm/gtc/type_ptr.hpp"
 #include "Model.hpp"
+#include <random>
 
 
 Snooker::Snooker(WindowWrapper *wrapper) : windowWrapper(wrapper) {
@@ -61,7 +62,7 @@ void Snooker::init() {
         4, 5, 6, 7,   8,  9, 14,
         10
     };
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 16; i++) {
         EntityType entityType;
         if (i == 0) {
             entityType = SELF;
@@ -72,8 +73,14 @@ void Snooker::init() {
         } else {
             entityType = BLACK;
         }
-        Entity ball(entityType, &ballModels[indices[i]], glm::vec3(0.0f, 0.0525f + 0.105f * i, 0.0f));
+        Entity ball(entityType, &ballModels[indices[i]], glm::vec3(0.1f, 0.0525f + 0.105f * i, 0.0f));
         ball.velocity = glm::vec3(1.2f, 0.0f, 2.1f);
+        if (ball.type != SELF) {
+            std::random_device dev;
+            std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
+            ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
+            ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+        }
         entities.push_back(ball);
     }
 }
@@ -114,7 +121,21 @@ void Snooker::update() {
     lastInstant = thisInstant;
     for (int i = 0; i < entities.size(); i++) {
         Entity &entity = entities[i];
-        entity.update(deltaTime);
+        entity.update(deltaTime, &entities, i);
+    }
+    
+    if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_R)) {
+        std::random_device dev;
+        std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
+        for (int i = 0; i < 16; i++) {
+            Entity &ball = entities[i];
+            if (ball.type != SELF) {
+                ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
+                ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+            } else {
+                ball.velocity = glm::vec3(distrib(dev) * 10.0f, 0.0f, distrib(dev) * 10.0f);
+            }
+        }
     }
 }
 
