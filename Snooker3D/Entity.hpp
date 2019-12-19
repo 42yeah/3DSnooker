@@ -30,7 +30,7 @@ public:
     Entity() {}
     Entity(EntityType type, Model *model, glm::vec3 position);
     
-    void update(float deltaTime, std::vector<Entity> *entities, int index);
+    void update(float deltaTime, std::vector<Entity> *entities, std::vector<glm::vec3> *holes, int index);
     void render(StandardProgram &program);
     
     float radius;
@@ -42,6 +42,7 @@ public:
     // === LOGIC === //
     EntityType type;
     glm::mat4 rollMatrix;
+    bool holed;
     
     // === PHYSICS === //
     float rou; // ρ: The air density

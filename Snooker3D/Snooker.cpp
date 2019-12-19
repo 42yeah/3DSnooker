@@ -62,6 +62,8 @@ void Snooker::init() {
         4, 5, 6, 7,   8,  9, 14,
         10
     };
+    std::random_device dev;
+    std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
     for (int i = 0; i < 16; i++) {
         EntityType entityType;
         if (i == 0) {
@@ -76,13 +78,19 @@ void Snooker::init() {
         Entity ball(entityType, &ballModels[indices[i]], glm::vec3(0.1f, 0.0525f + 0.105f * i, 0.0f));
         ball.velocity = glm::vec3(1.2f, 0.0f, 2.1f);
         if (ball.type != SELF) {
-            std::random_device dev;
-            std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
             ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
             ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
         }
         entities.push_back(ball);
     }
+    
+    // === HOLES === //
+    holes.push_back(glm::vec3(-2.0f, 0.0f, -1.0f));
+    holes.push_back(glm::vec3(0.0f, 0.0f, -1.0f));
+    holes.push_back(glm::vec3(2.0f, 0.0f, -1.0f));
+    holes.push_back(glm::vec3(-2.0f, 0.0f, 1.0f));
+    holes.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+    holes.push_back(glm::vec3(2.0f, 0.0f, 1.0f));
 }
 
 void Snooker::renderSkybox() {
@@ -121,7 +129,7 @@ void Snooker::update() {
     lastInstant = thisInstant;
     for (int i = 0; i < entities.size(); i++) {
         Entity &entity = entities[i];
-        entity.update(deltaTime, &entities, i);
+        entity.update(deltaTime, &entities, &holes, i);
     }
     
     if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_R)) {
@@ -129,8 +137,11 @@ void Snooker::update() {
         std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
         for (int i = 0; i < 16; i++) {
             Entity &ball = entities[i];
+            ball.holed = false;
+            ball.position.y = 0.0525f;
+            ball.velocity.y = 0.0f;
+            ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
             if (ball.type != SELF) {
-                ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
                 ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
             } else {
                 ball.velocity = glm::vec3(distrib(dev) * 10.0f, 0.0f, distrib(dev) * 10.0f);
@@ -143,7 +154,7 @@ float t = 0.0f;
 
 void Snooker::applyRegularCamera() {
     t += 0.001f;
-    view = glm::lookAt(glm::vec3(-3.0f * cosf(t), 2.0f, -3.0f * sinf(t)), entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(glm::vec3(-3.0f, 2.0f, -1.0f), entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
     perspective = glm::perspective(glm::radians(45.0f),
                                    windowWrapper->getFrameBufferSize().x / windowWrapper->getFrameBufferSize().y,
                                    0.01f,

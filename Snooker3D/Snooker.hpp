@@ -49,6 +49,7 @@ private:
     Model billiardTable;
     std::vector<Model> ballModels;
     std::vector<Entity> entities;
+    std::vector<glm::vec3> holes;
     StandardProgram program;
     TextureStore textureStore;
     double lastInstant;
