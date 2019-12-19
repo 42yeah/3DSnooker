@@ -25,8 +25,8 @@ void Snooker::init() {
 
     
     // === TEST DATA === //
-    program.link("Assets/testTriangle.vertex.glsl",
-                             "Assets/testTriangle.fragment.glsl");
+    program.link("Assets/standard.vertex.glsl",
+                             "Assets/standard.fragment.glsl");
     
     glGenVertexArrays(1, &testTriangleVAO);
     glGenBuffers(1, &testTriangleVBO);
@@ -162,7 +162,7 @@ void Snooker::update() {
     float tremble = distrib->operator()(dev) * (force / 11.0f) * 0.01f;
     stickPos += tremble + tremble;
     glm::vec3 sighting = glm::cross(glm::normalize(ray), glm::vec3(0.0f, 1.0f, 0.0f));
-    float cosine = acosf(glm::dot(ray, glm::vec3(0.0f, -1.0f, 0.0f)));
+    float cosine = acosf(-ray.y);
     cue.modelMatrix = glm::rotate(
                                   glm::translate(glm::mat4(1.0f), stickPos),
                                   cosine + glm::radians(180.0f),

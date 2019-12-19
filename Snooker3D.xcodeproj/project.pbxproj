@@ -479,8 +479,8 @@
 		1816FC7D23890304008B9476 /* Snooker.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Snooker.hpp; sourceTree = "<group>"; };
 		1816FC7F23890656008B9476 /* StandardProgram.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = StandardProgram.cpp; sourceTree = "<group>"; };
 		1816FC8023890656008B9476 /* StandardProgram.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = StandardProgram.hpp; sourceTree = "<group>"; };
-		1816FC8423890880008B9476 /* testTriangle.vertex.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = testTriangle.vertex.glsl; sourceTree = "<group>"; };
-		1816FC8523890924008B9476 /* testTriangle.fragment.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = testTriangle.fragment.glsl; sourceTree = "<group>"; };
+		1816FC8423890880008B9476 /* standard.vertex.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = standard.vertex.glsl; sourceTree = "<group>"; };
+		1816FC8523890924008B9476 /* standard.fragment.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = standard.fragment.glsl; sourceTree = "<group>"; };
 		1816FC86238911BD008B9476 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1816FC8723891409008B9476 /* tiny_obj_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tiny_obj_loader.h; sourceTree = "<group>"; };
 		1816FC88238919E8008B9476 /* suzanne.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzanne.obj; sourceTree = "<group>"; };
@@ -1132,8 +1132,8 @@
 				185F426B23AB2FC10076E230 /* PoolTable */,
 				1816FC8923891B3C008B9476 /* suzanne.mtl */,
 				1816FC88238919E8008B9476 /* suzanne.obj */,
-				1816FC8423890880008B9476 /* testTriangle.vertex.glsl */,
-				1816FC8523890924008B9476 /* testTriangle.fragment.glsl */,
+				1816FC8423890880008B9476 /* standard.vertex.glsl */,
+				1816FC8523890924008B9476 /* standard.fragment.glsl */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
