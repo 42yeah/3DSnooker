@@ -44,9 +44,9 @@ void Entity::update(float deltaTime, std::vector<Entity> *entities, std::vector<
         }
     }
     glm::mat3 rotation = {
-        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 0.0f,
-        1.0f, 0.0f, 0.0f
+        -1.0f, 0.0f, 0.0f
     };
     for (int i = 0; i < entities->size() && !holed; i++) {
         if (i == index) { continue; }
@@ -62,7 +62,9 @@ void Entity::update(float deltaTime, std::vector<Entity> *entities, std::vector<
             velocity = averagedVelocity * direction;
             anotherBall.velocity = averagedVelocity * -direction;
             position = position + velocity * deltaTime;
+            anotherBall.position = anotherBall.position + anotherBall.velocity * deltaTime;
             i = -1;
+            deltaTime *= 1.01f;
             continue;
         }
     }

@@ -12,7 +12,6 @@
 #include "../Ext/glm/gtc/matrix_transform.hpp"
 #include "../Ext/glm/gtc/type_ptr.hpp"
 #include "Model.hpp"
-#include <random>
 
 
 Snooker::Snooker(WindowWrapper *wrapper) : windowWrapper(wrapper) {
@@ -51,9 +50,14 @@ void Snooker::init() {
     billiardTable = Model("Assets/PoolTable/PoolTable.obj", "Assets/PoolTable");
     billiardTable.load(-1, &textureStore);
     loadBallModels();
+    cue = Model("Assets/Cue/PoolCue.obj", "Assets/Cue");
+    cue.load(-1, &textureStore);
     
     // === TIME === //
     lastInstant = glfwGetTime();
+    rotation = 0.0f;
+    distrib = new std::uniform_real_distribution<float>(-1.0f, 1.0f);
+    force = 0.0f;
     
     // === ENTITIES === //
     int indices[] = {
@@ -62,8 +66,10 @@ void Snooker::init() {
         4, 5, 6, 7,   8,  9, 14,
         10
     };
-    std::random_device dev;
-    std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
+
+    glm::vec3 currentPos(-1.2f, 0.0525f, 0.0f);
+    int numRows = 1;
+    int currentRow = 1;
     for (int i = 0; i < 16; i++) {
         EntityType entityType;
         if (i == 0) {
@@ -75,12 +81,26 @@ void Snooker::init() {
         } else {
             entityType = BLACK;
         }
-        Entity ball(entityType, &ballModels[indices[i]], glm::vec3(0.1f, 0.0525f + 0.105f * i, 0.0f));
-        ball.velocity = glm::vec3(1.2f, 0.0f, 2.1f);
-        if (ball.type != SELF) {
-            ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
-            ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+        Entity ball(entityType, &ballModels[indices[i]], currentPos);
+        if (i == 0) {
+            currentPos = glm::vec3(0.3f, 0.0525f, 0.0f);
         }
+        if (i >= 1) {
+            currentPos.z += 0.0526f * 2.0f;
+            std::cout << "Row #" << numRows << std::endl;
+            if (currentRow > numRows - 1) {
+                currentRow = 0;
+                numRows++;
+                currentPos.x += 0.0526f * 2.0f;
+                currentPos.z = -0.0526f * 2.0f * numRows / 2.0f + 0.0526f;
+            }
+            currentRow++;
+        }
+//        ball.velocity = glm::vec3(1.2f, 0.0f, 2.1f);
+//        if (ball.type != SELF) {
+//            ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
+//            ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+//        }
         entities.push_back(ball);
     }
     
@@ -103,6 +123,9 @@ void Snooker::renderTable() {
     for (Entity &entity : entities) {
         entity.render(program);
     }
+    glDisable(GL_DEPTH_TEST);
+    cue.render(program);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Snooker::renderHoles() {
@@ -127,34 +150,63 @@ void Snooker::update() {
     double thisInstant = glfwGetTime();
     float deltaTime = (float) (thisInstant - lastInstant);
     lastInstant = thisInstant;
+    
     for (int i = 0; i < entities.size(); i++) {
         Entity &entity = entities[i];
         entity.update(deltaTime, &entities, &holes, i);
     }
+
+    camPos.y -= 1.0f;
+    glm::vec3 ray = glm::normalize(entities[0].position - camPos);
+    glm::vec3 stickPos = entities[0].position - ray * (0.72f + (force / 11.0f) * 0.5f);
+    float tremble = distrib->operator()(dev) * (force / 11.0f) * 0.01f;
+    stickPos += tremble + tremble;
+    glm::vec3 sighting = glm::cross(glm::normalize(ray), glm::vec3(0.0f, 1.0f, 0.0f));
+    float cosine = acosf(glm::dot(ray, glm::vec3(0.0f, -1.0f, 0.0f)));
+    cue.modelMatrix = glm::rotate(
+                                  glm::translate(glm::mat4(1.0f), stickPos),
+                                  cosine + glm::radians(180.0f),
+                                  sighting
+                                  );
     
+    if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_SPACE)) {
+        force += deltaTime * 10.0f;
+        if (force >= 11.0f) { force = 11.0f; }
+    } else if (force != 0.0f && !glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_SPACE)) {
+        ray.y = 0.0f;
+        entities[0].velocity = glm::normalize(ray) * force;
+        force = 0.0f;
+    }
+    if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_A)) {
+        rotation -= 1.57f * deltaTime;
+    }
+    if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_D)) {
+        rotation += 1.57f * deltaTime;
+    }
     if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_R)) {
         std::random_device dev;
         std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 1; i++) {
             Entity &ball = entities[i];
             ball.holed = false;
             ball.position.y = 0.0525f;
             ball.velocity.y = 0.0f;
-            ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
+//            ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
+            ball.position = glm::vec3(-1.2f, 0.0525f, 0.0f);
             if (ball.type != SELF) {
                 ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
             } else {
-                ball.velocity = glm::vec3(distrib(dev) * 10.0f, 0.0f, distrib(dev) * 10.0f);
+//                ball.velocity = glm::vec3(distrib(dev) * 10.0f, 0.0f, distrib(dev) * 10.0f);
+                ball.velocity = glm::vec3(10.0f, 0.0f, 0.7f);
             }
         }
     }
 }
 
-float t = 0.0f;
-
 void Snooker::applyRegularCamera() {
-    t += 0.001f;
-    view = glm::lookAt(glm::vec3(-3.0f, 2.0f, -1.0f), entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
+    camPos = glm::vec3(entities[0].position.x - 1.2f * cosf(rotation), 0.8f, entities[0].position.z - 1.2f * sinf(rotation));
+//    view = glm::lookAt(glm::vec3(3.0f * cosf(t), 1.5f, sinf(t) * 1.0f), entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(camPos, entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
     perspective = glm::perspective(glm::radians(45.0f),
                                    windowWrapper->getFrameBufferSize().x / windowWrapper->getFrameBufferSize().y,
                                    0.01f,

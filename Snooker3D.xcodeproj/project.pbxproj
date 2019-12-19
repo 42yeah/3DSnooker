@@ -489,6 +489,14 @@
 		18226E2A239E18F200282C60 /* Model.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Model.hpp; sourceTree = "<group>"; };
 		185553F423AA6851000E228A /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		185553F523AA6851000E228A /* Entity.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Entity.hpp; sourceTree = "<group>"; };
+		185F426623AB2FC10076E230 /* Balls.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = Balls.obj; sourceTree = "<group>"; };
+		185F426723AB2FC10076E230 /* Balls.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Balls.mtl; sourceTree = "<group>"; };
+		185F426823AB2FC10076E230 /* Amalgamation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Amalgamation.png; sourceTree = "<group>"; };
+		185F426923AB2FC10076E230 /* cube.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
+		185F426C23AB2FC10076E230 /* UV.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UV.png; sourceTree = "<group>"; };
+		185F426D23AB2FC10076E230 /* PoolTable.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = PoolTable.obj; sourceTree = "<group>"; };
+		185F426E23AB2FC10076E230 /* PoolTable.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = PoolTable.mtl; sourceTree = "<group>"; };
+		185F427223AB2FC10076E230 /* cube.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.mtl; sourceTree = "<group>"; };
 		1891864023A231B6001DC10A /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1118,12 +1126,36 @@
 		1816FC8223890846008B9476 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				185F426523AB2FC10076E230 /* Balls */,
+				185F427223AB2FC10076E230 /* cube.mtl */,
+				185F426923AB2FC10076E230 /* cube.obj */,
+				185F426B23AB2FC10076E230 /* PoolTable */,
 				1816FC8923891B3C008B9476 /* suzanne.mtl */,
 				1816FC88238919E8008B9476 /* suzanne.obj */,
 				1816FC8423890880008B9476 /* testTriangle.vertex.glsl */,
 				1816FC8523890924008B9476 /* testTriangle.fragment.glsl */,
 			);
 			path = Assets;
+			sourceTree = "<group>";
+		};
+		185F426523AB2FC10076E230 /* Balls */ = {
+			isa = PBXGroup;
+			children = (
+				185F426623AB2FC10076E230 /* Balls.obj */,
+				185F426723AB2FC10076E230 /* Balls.mtl */,
+				185F426823AB2FC10076E230 /* Amalgamation.png */,
+			);
+			path = Balls;
+			sourceTree = "<group>";
+		};
+		185F426B23AB2FC10076E230 /* PoolTable */ = {
+			isa = PBXGroup;
+			children = (
+				185F426C23AB2FC10076E230 /* UV.png */,
+				185F426D23AB2FC10076E230 /* PoolTable.obj */,
+				185F426E23AB2FC10076E230 /* PoolTable.mtl */,
+			);
+			path = PoolTable;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
