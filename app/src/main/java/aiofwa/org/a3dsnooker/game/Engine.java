@@ -18,6 +18,14 @@ public class Engine extends GLSurfaceView {
         setRenderer(this.engineRenderer);
     }
 
+    // === METHODS === //
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        onMotionEvent(event);
+        return super.onTouchEvent(event);
+    }
+
     public void onMotionEvent(MotionEvent event) {
         float w = getWidth(), h = getHeight();
         motionEvent(event.getAction(), event.getX() / w, event.getY() / h);

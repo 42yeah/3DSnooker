@@ -19,7 +19,6 @@ public class SnookerActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        gameEngine.onMotionEvent(event);
         return super.onGenericMotionEvent(event);
     }
 

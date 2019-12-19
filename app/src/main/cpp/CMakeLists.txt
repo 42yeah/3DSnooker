@@ -11,6 +11,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
+file(GLOB imgui "Ext/imgui/*.cpp" "Ext/imgui/implements/*.cpp")
+
 add_library( # Sets the name of the library.
         native-lib
 
@@ -19,9 +21,14 @@ add_library( # Sets the name of the library.
 
         # Provides a relative path to your source file(s).
         native-lib.cpp
-        files.cpp
-        gl_helpers.cpp
-        model.cpp)
+        Resources.cpp
+        Entity.cpp
+        Game.cpp
+        Model.cpp
+        Snooker.cpp
+        StandardProgram.cpp
+        WindowWrapper.cpp
+        ${imgui})
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
