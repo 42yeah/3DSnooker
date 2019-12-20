@@ -31,11 +31,11 @@ Java_aiofwa_org_a3dsnooker_game_Engine_motionEvent(JNIEnv *env, jobject instance
                                                    jfloat x, jfloat y) {
     game->getImGuiIO()->MousePos = { (float) x * game->getWindowWrapper()->getWindowSize().x,
                                      (float) y * game->getWindowWrapper()->getWindowSize().y };
-    game->fingerPos = glm::vec2(x, y);
+    LOG("Pressin' %d", action);
     switch (action) {
         case 0:
             // === PRESSING DOWN ===
-            game->fingerPressed = true;
+            game->updateEvent(glm::vec2(x, y), true);
             break;
 
         case 2:
@@ -44,7 +44,7 @@ Java_aiofwa_org_a3dsnooker_game_Engine_motionEvent(JNIEnv *env, jobject instance
 
         case 1:
             // === RELEASING ===
-            game->fingerPressed = false;
+            game->updateEvent(glm::vec2(x, y), false);
             break;
     }
 }
@@ -61,7 +61,6 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobject instance) {
     game = new Game();
-//    game->getWindowWrapper()->getWindowSize() = game->getWindowWrapper()->getFrameBufferSize() = { 1080, 1808 };
     game->init();
     LOG("ImGui Initialized\n");
 }
@@ -77,5 +76,5 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceChanged(JNIEnv *env, jobje
 extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject instance) {
-    game->showMenu();
+    game->render();
 }

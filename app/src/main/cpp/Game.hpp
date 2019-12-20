@@ -10,6 +10,7 @@
 #define Game_hpp
 
 #include "WindowWrapper.hpp"
+#include "Snooker.hpp"
 #include "Ext/imgui/imgui.h"
 
 
@@ -17,11 +18,16 @@ enum Result {
     NOT_DECIDED_YET, START_GAME, START_OPTION, EXIT
 };
 
+enum RenderState {
+    MENU, OPTIONS, SNOOKER
+};
+
 class Game {
 public:
     Game() {}
 
     void init();
+    void render();
     Result showMenu();
     void showWinner();
     void showImGuiDemoWindow();
@@ -29,19 +35,22 @@ public:
     void startOption();
     bool hasWinner();
     void processTurn();
+    void updateEvent(glm::vec2 fingerPos, bool fingerPressed);
 
     WindowWrapper *getWindowWrapper();
     ImGuiIO *getImGuiIO();
-    glm::vec2 fingerPos;
-    bool fingerPressed;
 
 private:
-    WindowWrapper *windowWrapper;
-    ImGuiIO *imGuiIO;
-    
     void initImGui();
     void mapKeys();
-    void updateCursor();
+    void initSnookerRuntime();
+
+    WindowWrapper *windowWrapper;
+    ImGuiIO *imGuiIO;
+    glm::vec2 fingerPos;
+    bool fingerPressed;
+    RenderState renderState;
+    Snooker *snookerGame;
 };
 
 #endif /* Game_hpp */

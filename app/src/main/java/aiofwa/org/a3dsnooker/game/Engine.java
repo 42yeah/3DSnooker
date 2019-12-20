@@ -16,16 +16,10 @@ public class Engine extends GLSurfaceView {
         this.setEGLContextClientVersion(2);
         this.setEGLConfigChooser(new EngineConfigChooser());
         setRenderer(this.engineRenderer);
+        this.setOnTouchListener(new OnTouchListener());
     }
 
     // === METHODS === //
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        onMotionEvent(event);
-        return super.onTouchEvent(event);
-    }
-
     public void onMotionEvent(MotionEvent event) {
         float w = getWidth(), h = getHeight();
         motionEvent(event.getAction(), event.getX() / w, event.getY() / h);
@@ -41,4 +35,14 @@ public class Engine extends GLSurfaceView {
     // === VARIABLES === //
     Context context;
     EngineRenderer engineRenderer;
+
+    // === HELPER CLASSES === //
+    class OnTouchListener implements View.OnTouchListener {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            performClick();
+            onMotionEvent(event);
+            return true;
+        }
+    }
 }

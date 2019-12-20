@@ -17,7 +17,7 @@
 #define S(x) #x
 #define S_(x) S(x)
 #define S__LINE__ S_(__LINE__)
-#define LOG(...) __android_log_print(ANDROID_LOG_INFO, "Snooker3D " ":" S__LINE__, __VA_ARGS__)
+#define LOG(...) __android_log_print(ANDROID_LOG_INFO, "Snooker3D:" S__LINE__, __VA_ARGS__)
 
 
 class WindowWrapper {
@@ -30,8 +30,6 @@ public:
 
     glm::vec2 getWindowSize();
     glm::vec2 getFrameBufferSize();
-    glm::vec2 getCursorPosition();
-    bool getCursorState(int i);
 
     // Warning: Might not work!
     const void *getNativeWindow();
@@ -42,7 +40,6 @@ public:
 
 private:
     void *nativeWindow;
-    bool cursorCache[5];
 };
 
 #endif /* WindowWrapper_hpp */

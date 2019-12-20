@@ -21,82 +21,104 @@ void Game::init() {
     windowWrapper = new WindowWrapper();
     windowWrapper->init(1080, 1800, "Snooker3D");
     fingerPos = glm::vec2(0.0f, 0.0f);
+    this->renderState = MENU;
     fingerPressed = false;
     initImGui();
 }
 
+void Game::render() {
+    Result result;
+
+    switch (this->renderState) {
+    case MENU:
+        result = showMenu();
+        switch (result) {
+        case EXIT:
+            std::exit(0);
+
+        case START_GAME:
+            this->renderState = SNOOKER;
+            initSnookerRuntime();
+            break;
+
+        case START_OPTION:
+            this->renderState = OPTIONS;
+            break;
+
+        default:
+            break;
+        }
+        break;
+
+    case SNOOKER:
+        startGame();
+        break;
+    }
+}
+
 Result Game::showMenu() {
     windowWrapper->pollEvents();
-    updateCursor();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+    Result result = NOT_DECIDED_YET;
+
     // === USER CONTENT === //
     ImGui_ImplOpenGL3_NewFrame();
     imGuiIO->MouseDown[0] = fingerPressed;
-    if (fingerPressed) { fingerPressed = false; }
     imGuiIO->MousePos = ImVec2(fingerPos.x * windowWrapper->getWindowSize().x, fingerPos.y * windowWrapper->getWindowSize().y);
     ImGui::NewFrame();
     bool opened = true;
-//    LOG("EVENT: %f %f, Pressed: %d", imGuiIO->MousePos.x, imGuiIO->MousePos.y, imGuiIO->MouseDown[0]);
     ImGui::Begin("Snooker3D Game Menu", &opened, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
     ImGui::SetWindowSize({ windowWrapper->getWindowSize().x, 300 });
     ImGui::SetWindowPos({ 0, 0 });
     ImGui::Text("Welcome to Snooker3D. It is still in\nvery very early alpha.");
     if (ImGui::CollapsingHeader("Start Game")) {
-        return START_GAME;
+        result = START_GAME;
     }
     if (ImGui::CollapsingHeader("Options")) {
-        return START_OPTION;
+        result = START_OPTION;
     }
     if (ImGui::CollapsingHeader("Exit")) {
-        return EXIT;
+        result = EXIT;
     }
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     windowWrapper->swapBuffers();
-    return NOT_DECIDED_YET;
+    return result;
 }
 
 void Game::showImGuiDemoWindow() {
-    while (!windowWrapper->shouldClose()) {
-        windowWrapper->pollEvents();
-        updateCursor();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        ImGui_ImplOpenGL3_NewFrame();
-//        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        ImGui::ShowDemoWindow();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        windowWrapper->swapBuffers();
-    }
+    windowWrapper->pollEvents();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    ImGui_ImplOpenGL3_NewFrame();
+    imGuiIO->MouseDown[0] = fingerPressed;
+    imGuiIO->MousePos = ImVec2(fingerPos.x * windowWrapper->getWindowSize().x, fingerPos.y * windowWrapper->getWindowSize().y);
+    ImGui::NewFrame();
+    ImGui::ShowDemoWindow();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    windowWrapper->swapBuffers();
 }
 
 void Game::showWinner() {
     
 }
 
-void Game::startGame() { 
-    Snooker snooker(windowWrapper);
-    snooker.init();
-    while (!windowWrapper->shouldClose()) {
-        windowWrapper->pollEvents();
-        updateCursor();
-        snooker.update();
+void Game::startGame() {
+    windowWrapper->pollEvents();
+    snookerGame->update();
         
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        snooker.applyRegularCamera();
-        snooker.renderSkybox();
-        snooker.renderTable();
+    snookerGame->applyRegularCamera();
+    snookerGame->renderSkybox();
+    snookerGame->renderTable();
 //        snooker.renderTable();
 //        snooker.renderHoles();
 //        snooker.renderBalls();
 //        snooker.renderCueStick();
 
-        windowWrapper->swapBuffers();
-    }
+    windowWrapper->swapBuffers();
 }
 
 void Game::startOption() {
@@ -128,17 +150,7 @@ void Game::initImGui() {
     io.DisplayFramebufferScale = ImVec2(frameBufferSize.x / winSize.x,
                                         frameBufferSize.y / winSize.y);
     this->imGuiIO = &io;
-//    this->mapKeys(); There is no keys
-}
-
-void Game::updateCursor() {
-    assert(this->imGuiIO != nullptr);
-    ImGuiIO &io = *this->imGuiIO;
-    glm::vec2 cursorPos = windowWrapper->getCursorPosition();
-    io.MousePos = { cursorPos.x, cursorPos.y };
-    for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) {
-        io.MouseDown[i] = windowWrapper->getCursorState(i);
-    }
+    this->mapKeys(); // There is no keys, but we can specify the touch mode
 }
 
 void Game::mapKeys() { 
@@ -147,6 +159,7 @@ void Game::mapKeys() {
     ImGuiIO &io = *this->imGuiIO;
     // DEPRECATED: THERE IS NO KEYS
 //    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_IsTouchScreen;
 }
 
 WindowWrapper *Game::getWindowWrapper() {
@@ -157,3 +170,12 @@ ImGuiIO *Game::getImGuiIO() {
     return imGuiIO;
 }
 
+void Game::updateEvent(glm::vec2 fingerPos, bool fingerPressed) {
+    this->fingerPos = fingerPos;
+    this->fingerPressed = fingerPressed;
+}
+
+void Game::initSnookerRuntime() {
+    snookerGame = new Snooker(windowWrapper);
+    snookerGame->init();
+}

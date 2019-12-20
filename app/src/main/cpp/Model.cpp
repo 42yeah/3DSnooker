@@ -32,14 +32,10 @@ void Model::load(int index, TextureStore *store) {
 
     tinyobj::LoadObj(&attributes, &shapes, &materials, &warnings, &errors, modelPath.c_str(), modelMtlBaseDir.c_str());
 
-    int textureWidth = 0;
-    int textureHeight = 0;
     if (materials.size() > 0) {
         // There IS texture!
         tinyobj::material_t &material = materials[0];
         ambientTexture = store->load(modelMtlBaseDir + "/" + material.diffuse_texname);
-        textureWidth = ambientTexture->w;
-        textureHeight = ambientTexture->h;
         diffuseTexture = store->load(modelMtlBaseDir + "/" + material.diffuse_texname);
         specularTexture = store->load(modelMtlBaseDir + "/" + material.specular_texname);
     }
