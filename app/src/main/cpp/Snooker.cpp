@@ -209,6 +209,12 @@ void Snooker::handleEvent(bool down, glm::vec2 pos) {
         float deltaX = pos.x - fingerPosWhenDown.x;
         float deltaY = pos.y - fingerPosWhenDown.y;
         float deltaDeg = deltaX * (PI / 2.0f);
+        if (!down) {
+            cachedRotation = cachedRotation + deltaDeg;
+            rotation = cachedRotation;
+        } else {
+            rotation = cachedRotation + deltaDeg;
+        }
         if (deltaY >= 0.1f) {
             force = fmin(deltaY - 0.1f, 0.3f) / 0.3f * 11.0f;
             if (!down) {
@@ -219,14 +225,7 @@ void Snooker::handleEvent(bool down, glm::vec2 pos) {
             }
         } else {
             force = 0.0f;
-            if (!down) {
-                cachedRotation = cachedRotation + deltaDeg;
-                rotation = cachedRotation;
-            } else {
-                rotation = cachedRotation + deltaDeg;
-            }
         }
-
     }
     previousFingerState = down;
 }

@@ -7,6 +7,7 @@
 //
 
 #include "Entity.hpp"
+#include "WindowWrapper.hpp"
 #include <cmath>
 
 
@@ -42,19 +43,19 @@ void Entity::update(float deltaTime, std::vector<Entity> *entities, std::vector<
         }
     }
     glm::mat3 rotation = {
-        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, -1.0f,
         0.0f, 1.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f
+        1.0f, 0.0f, 0.0f
     };
     for (int i = 0; i < entities->size() && !holed; i++) {
         if (i == index) { continue; }
         Entity &anotherBall = entities->at(i);
         if (anotherBall.holed) { continue; }
-        float dist = glm::distance(position, anotherBall.position);
+        float dist = glm::distance(position + velocity * deltaTime, anotherBall.position);
         if (dist <= radius * 2.0f) {
             // there is a collision
             glm::vec3 connection = position - anotherBall.position;
-            glm::vec3 reflection = glm::normalize(rotation * connection);
+            glm::vec3 reflection = glm::normalize(connection);
             float averagedVelocity = (glm::length(velocity) + glm::length(anotherBall.velocity)) / 2.0f;
             glm::vec3 direction = glm::reflect(glm::normalize(velocity), reflection);
             velocity = averagedVelocity * direction;
