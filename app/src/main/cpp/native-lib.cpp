@@ -31,7 +31,6 @@ Java_aiofwa_org_a3dsnooker_game_Engine_motionEvent(JNIEnv *env, jobject instance
                                                    jfloat x, jfloat y) {
     game->getImGuiIO()->MousePos = { (float) x * game->getWindowWrapper()->getWindowSize().x,
                                      (float) y * game->getWindowWrapper()->getWindowSize().y };
-    LOG("Pressin' %d", action);
     switch (action) {
         case 0:
             // === PRESSING DOWN ===
