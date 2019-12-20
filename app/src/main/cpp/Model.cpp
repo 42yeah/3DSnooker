@@ -9,6 +9,7 @@
 #include "Model.hpp"
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
+#include <string>
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Ext/tiny_obj_loader.h"
 #define STB_IMAGE_IMPLEMENTATION
@@ -16,14 +17,15 @@
 #include "WindowWrapper.hpp"
 
 
-Model::Model(std::string path, std::string mtlBaseDir) {
-    this->modelPath = path;
-    this->modelMtlBaseDir = mtlBaseDir;
-    this->modelName = path;
+Model::Model(std::string objPath, std::string mtlPath, std::string baseDir) {
+    this->modelPath = objPath;
+    this->modelMtlPath = mtlPath;
+    this->modelName = objPath;
+    this->textureBaseDir = baseDir;
     this->modelMatrix = glm::mat4(1.0f);
 }
 
-void Model::load(int index, TextureStore *store) {
+void Model::load(Resources *loader, int index, TextureStore *store) {
     this->numVertices = 0;
     tinyobj::attrib_t attributes;
     std::vector<tinyobj::shape_t> shapes;
@@ -31,14 +33,19 @@ void Model::load(int index, TextureStore *store) {
     std::string warnings;
     std::string errors;
 
-    tinyobj::LoadObj(&attributes, &shapes, &materials, &warnings, &errors, modelPath.c_str(), modelMtlBaseDir.c_str());
+    std::stringstream objStream = loader->readFileAsStringStream(modelPath);
+    std::stringstream mtlStringStream = loader->readFileAsStringStream(modelMtlPath);
+    std::istream &mtlInputStream = mtlStringStream;
+    tinyobj::MaterialStreamReader mtlStream(mtlInputStream);
+    tinyobj::LoadObj(&attributes, &shapes, &materials, &warnings, &errors, &objStream, &mtlStream);
+//    tinyobj::LoadObj(&attributes, &shapes, &materials, &warnings, &errors, modelPath.c_str(), modelMtlBaseDir.c_str());
 
     if (materials.size() > 0) {
         // There IS texture!
         tinyobj::material_t &material = materials[0];
-        ambientTexture = store->load(modelMtlBaseDir + "/" + material.diffuse_texname);
-        diffuseTexture = store->load(modelMtlBaseDir + "/" + material.diffuse_texname);
-        specularTexture = store->load(modelMtlBaseDir + "/" + material.specular_texname);
+        ambientTexture = store->load(textureBaseDir + "/" + material.diffuse_texname);
+        diffuseTexture = store->load(textureBaseDir + "/" + material.diffuse_texname);
+        specularTexture = store->load(textureBaseDir + "/" + material.specular_texname);
     }
 
     std::vector<Vertex> vertices;
@@ -76,29 +83,23 @@ void Model::load(int index, TextureStore *store) {
         this->numVertices += mesh.indices.size();
     }
 
-    // TODO: Fix this
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, nullptr);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *) (sizeof(float) * 3));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *) (sizeof(float) * 6));
+    this->VBO = VBO;
 
-    LOG("Model loading done: %s, %s.", warnings.c_str(), errors.c_str());
+    LOG("Model loading done: %s, %s. #vertices: %u", warnings.c_str(), errors.c_str(), vertices.size());
 }
 
 void Model::render(StandardProgram &program) {
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    program.configVertexPointers();
     program.applyM(modelMatrix);
     program.applyTexture(ambientTexture, diffuseTexture, specularTexture);
     program.use();
 
-    // TODO: Fix this
-//    glBindVertexArray(VAO);
-//    glDrawArrays(GL_TRIANGLES, 0, numVertices);
+    glDrawArrays(GL_TRIANGLES, 0, numVertices);
 }
 
 Texture::Texture(std::string filename) {
@@ -107,23 +108,30 @@ Texture::Texture(std::string filename) {
     this->valid = false;
 }
 
-void Texture::load() {
+void Texture::load(Resources *loader) {
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(filename.c_str(), &w, &h, &channels, 0);
-    if (data == nullptr) {
+    std::string data = loader->readFileAsString(filename);
+    if (data == "") {
         valid = false;
+        LOG("Loading texture %s failed: file invalid.", filename.c_str());
         return;
     }
-    std::cout << "Loading texture " << filename.c_str() << std::endl;
+    unsigned char *raw = stbi_load_from_memory((unsigned char *) data.c_str(), data.size(), &w, &h, &channels, 0);
+    if (!raw) {
+        valid = false;
+        LOG("Loading texture %s failed: format invalid.", filename.c_str());
+        return;
+    }
+    LOG("Loading texture %s", filename.c_str());
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, raw);
     glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(data);
+    stbi_image_free(raw);
     valid = true;
 }
 
@@ -138,7 +146,10 @@ Texture *TextureStore::load(std::string filename) {
         }
     }
     Texture *newTexture = new Texture(filename);
-    newTexture->load();
+    newTexture->load(resourceLoader);
     textures.push_back(newTexture);
     return newTexture;
+}
+
+TextureStore::TextureStore(Resources *loader) : resourceLoader(loader) {
 }

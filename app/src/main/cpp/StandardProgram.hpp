@@ -34,18 +34,16 @@ public:
     void applyM(glm::mat4 model);
     void applyVP(glm::mat4 view, glm::mat4 perspec);
     void applyTexture(Texture *ambient, Texture *diffuse, Texture *specular);
+    void configVertexPointers();
 
 private:
     GLuint program;
     Resources *resourceLoader;
     
     // === LOCATIONS === //
-    GLuint modelLoc, viewLoc, perspectiveLoc;
-    GLuint texturizeLoc, ambientLoc, diffuseLoc, specularLoc;
-    
-public:
-    // === TESTING LOC === //
-    GLuint timeLoc;
+    GLint modelLoc, viewLoc, perspectiveLoc;
+    GLint texturizeLoc, ambientLoc, diffuseLoc, specularLoc;
+    GLuint aPosLoc, aNormalLoc, aTexCoordLoc;
 };
 
 #endif /* StandardProgram_hpp */

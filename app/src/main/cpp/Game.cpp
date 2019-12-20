@@ -110,18 +110,17 @@ void Game::showWinner() {
 
 void Game::startGame() {
     windowWrapper->pollEvents();
+    snookerGame->handleEvent(fingerPressed, fingerPos);
     snookerGame->update();
         
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     snookerGame->applyRegularCamera();
     snookerGame->renderSkybox();
-//    snookerGame->renderTable()
-    snookerGame->renderTestTriangle();
-//        snooker.renderTable();
-//        snooker.renderHoles();
-//        snooker.renderBalls();
-//        snooker.renderCueStick();
+//    snookerGame->renderTestTriangle();
+    snookerGame->renderTable();
+    snookerGame->renderBalls();
+    snookerGame->renderCueStick();
 
     windowWrapper->swapBuffers();
 }

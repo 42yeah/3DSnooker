@@ -20,6 +20,10 @@ std::string Resources::readFileAsString(std::string path) {
 std::stringstream Resources::readFileAsStringStream(std::string path) {
     AAsset *asset = AAssetManager_open(assetManager, path.c_str(), AASSET_MODE_STREAMING);
     std::stringstream ss;
+    if (!asset) {
+        ss.setstate(std::ios::failbit);
+        return ss;
+    }
     while (true) {
         char buf[1024];
         int len = AAsset_read(asset, buf, sizeof(buf));

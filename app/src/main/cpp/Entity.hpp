@@ -15,6 +15,8 @@
 #include "Model.hpp"
 #include "StandardProgram.hpp"
 
+#define PI 3.14159265f
+
 
 enum EntityType {
     FRIEND, FOE, SELF, BLACK

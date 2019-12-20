@@ -26,10 +26,10 @@ public:
     void update();
     void renderSkybox();
     void renderTable();
-    void renderHoles();
     void renderBalls();
     void renderCueStick();
     void applyRegularCamera();
+    void handleEvent(bool down, glm::vec2 pos);
     
     // === HELPERS === //
     void loadBallModels();
@@ -58,8 +58,11 @@ private:
     TextureStore textureStore;
     double lastInstant;
     glm::vec3 camPos;
+    float cachedRotation;
     float rotation;
     float force;
+    bool previousFingerState;
+    glm::vec2 fingerPosWhenDown;
 
     Resources *resourceLoader;
     
@@ -68,9 +71,7 @@ private:
     std::uniform_real_distribution<float> *distrib;
 
     // === TEST DATA === //
-    GLuint testTriangleVAO, testTriangleVBO;
-    
-    GLuint testCubeVAO;
+    GLuint testTriangleVBO;
 };
 
 #endif /* Snooker_hpp */

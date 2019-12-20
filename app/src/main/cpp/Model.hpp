@@ -28,7 +28,7 @@ public:
     Texture() {}
     Texture(std::string filename);
     
-    void load();
+    void load(Resources *loader);
     bool isValid();
     
     GLuint glTexture;
@@ -39,25 +39,29 @@ public:
 
 class TextureStore {
 public:
+    TextureStore(Resources *loader);
+
     Texture *load(std::string filename);
 
     std::vector<Texture *> textures;
+    Resources *resourceLoader;
 };
 
 // === LA REAL THANG === //
 class Model {
 public:
     Model() {}
-    Model(std::string path, std::string mtlBaseDir);
+    Model(std::string path, std::string mtlBaseDir, std::string textureBaseDir);
     
-    void load(int index, TextureStore *store);
+    void load(Resources *loader, int index, TextureStore *store);
     void render(StandardProgram &program);
 
     std::string modelName;
     std::string modelPath;
-    std::string modelMtlBaseDir;
+    std::string modelMtlPath;
+    std::string textureBaseDir;
     std::vector<Vertex> vertices;
-//    GLuint VAO;
+    GLuint VBO;
     int numVertices;
     
     Texture *ambientTexture, *diffuseTexture, *specularTexture;

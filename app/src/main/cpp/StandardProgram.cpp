@@ -28,6 +28,9 @@ void StandardProgram::link(std::string vertexShaderPath, std::string fragmentSha
     this->program = program;
     
     // === INITIALIZE LOCATION VARIABLES === //
+    this->aPosLoc = (GLuint) glGetAttribLocation(this->program, "aPos");
+    this->aNormalLoc = (GLuint) glGetAttribLocation(this->program, "aNormal");
+    this->aTexCoordLoc = (GLuint) glGetAttribLocation(this->program, "aTexCoord");
     this->modelLoc = glGetUniformLocation(this->program, "model");
     this->viewLoc = glGetUniformLocation(this->program, "view");
     this->perspectiveLoc = glGetUniformLocation(this->program, "perspective");
@@ -35,8 +38,6 @@ void StandardProgram::link(std::string vertexShaderPath, std::string fragmentSha
     this->ambientLoc = glGetUniformLocation(this->program, "ambientTexture");
 //    this->diffuseLoc = glGetUniformLocation(this->program, "diffuseTexture");
 //    this->specularLoc = glGetUniformLocation(this->program, "specularTexture");
-    
-    this->timeLoc = glGetUniformLocation(this->program, "time");
 }
 
 GLuint StandardProgram::compile(GLuint shaderType, std::string shaderPath) { 
@@ -73,6 +74,7 @@ void StandardProgram::applyTexture(Texture *ambient, Texture *diffuse, Texture *
         glUniform1i(this->texturizeLoc, 1);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ambient->glTexture);
+        glUniform1i(this->ambientLoc, 0);
     }
 //    glActiveTexture(GL_TEXTURE1);
 //    glBindTexture(GL_TEXTURE_2D, ambient->glTexture);
@@ -80,4 +82,14 @@ void StandardProgram::applyTexture(Texture *ambient, Texture *diffuse, Texture *
 //    glActiveTexture(GL_TEXTURE2);
 //    glBindTexture(GL_TEXTURE_2D, ambient->glTexture);
 //    glUniform1i(this->specularLoc, 2);
+}
+
+void StandardProgram::configVertexPointers() {
+    this->use();
+    glEnableVertexAttribArray(aPosLoc);
+    glVertexAttribPointer(aPosLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, nullptr);
+    glEnableVertexAttribArray(aNormalLoc);
+    glVertexAttribPointer(aNormalLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *) (sizeof(float) * 3));
+    glEnableVertexAttribArray(aTexCoordLoc);
+    glVertexAttribPointer(aTexCoordLoc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *) (sizeof(float) * 6));
 }

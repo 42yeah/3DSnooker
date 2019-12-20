@@ -39,6 +39,7 @@ Java_aiofwa_org_a3dsnooker_game_Engine_motionEvent(JNIEnv *env, jobject instance
 
         case 2:
             // === MOVING ===
+            game->updateEvent(glm::vec2(x, y), true);
             break;
 
         case 1:

@@ -9,8 +9,6 @@
 #include "Entity.hpp"
 #include <cmath>
 
-#define PI 3.14159265f
-
 
 std::basic_ostream<char> &operator<<(std::basic_ostream<char> &ostream, const glm::vec3 &vec3) {
     std::ostream &ost = ostream << vec3.x << ", " << vec3.y << ", " << vec3.z;
