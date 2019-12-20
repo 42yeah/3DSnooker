@@ -10,7 +10,16 @@
 #include <fstream>
 #include <sstream>
 #include "Model.hpp"
+#include <android/log.h>
+#define S(x) #x
+#define S_(x) S(x)
+#define S__LINE__ S_(__LINE__)
+#define LOG(...) __android_log_print(ANDROID_LOG_INFO, "Snooker3D:" S__LINE__, __VA_ARGS__)
 
+
+StandardProgram::StandardProgram(Resources *loader) {
+    this->resourceLoader = loader;
+}
 
 void StandardProgram::link(std::string vertexShaderPath, std::string fragmentShaderPath) {
     GLuint program = glCreateProgram();
@@ -19,7 +28,7 @@ void StandardProgram::link(std::string vertexShaderPath, std::string fragmentSha
     glLinkProgram(program);
     char log[512];
     glGetProgramInfoLog(program, sizeof(log), nullptr, log);
-    std::cout << "Program: " << log << std::endl;
+    LOG("Program: %s\n", log);
     this->program = program;
     
     // === INITIALIZE LOCATION VARIABLES === //
@@ -36,16 +45,14 @@ void StandardProgram::link(std::string vertexShaderPath, std::string fragmentSha
 
 GLuint StandardProgram::compile(GLuint shaderType, std::string shaderPath) { 
     GLuint shader = glCreateShader(shaderType);
-    std::ifstream reader(shaderPath.c_str());
-    std::stringstream ss;
-    reader >> ss.rdbuf();
+    std::stringstream ss = resourceLoader->readFileAsStringStream(shaderPath);
     std::string source = ss.str();
     const char *raw = source.c_str();
     glShaderSource(shader, 1, &raw, nullptr);
     glCompileShader(shader);
     char log[512] = { 0 };
     glGetShaderInfoLog(shader, sizeof(log), nullptr, log);
-    std::cout << shaderPath.c_str() << ": " << log << std::endl;
+    LOG("%s: %s\n", shaderPath.c_str(), log);
     return shader;
 }
 
@@ -78,5 +85,3 @@ void StandardProgram::applyTexture(Texture *ambient, Texture *diffuse, Texture *
 //    glBindTexture(GL_TEXTURE_2D, ambient->glTexture);
 //    glUniform1i(this->specularLoc, 2);
 }
-
-

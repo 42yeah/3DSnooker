@@ -12,6 +12,7 @@
 #include "WindowWrapper.hpp"
 #include "Snooker.hpp"
 #include "Ext/imgui/imgui.h"
+#include "Resources.hpp"
 
 
 enum Result {
@@ -25,6 +26,7 @@ enum RenderState {
 class Game {
 public:
     Game() {}
+    Game(Resources *loader);
 
     void init();
     void render();
@@ -51,6 +53,7 @@ private:
     bool fingerPressed;
     RenderState renderState;
     Snooker *snookerGame;
+    Resources *resourceLoader;
 };
 
 #endif /* Game_hpp */

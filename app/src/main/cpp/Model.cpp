@@ -13,6 +13,7 @@
 #include "Ext/tiny_obj_loader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "Ext/stb_image.h"
+#include "WindowWrapper.hpp"
 
 
 Model::Model(std::string path, std::string mtlBaseDir) {
@@ -50,7 +51,7 @@ void Model::load(int index, TextureStore *store) {
     for (int i = lowerBound; i < upperBound; i++) {
         tinyobj::shape_t &shape = shapes[i];
         tinyobj::mesh_t &mesh = shape.mesh;
-        std::cout << "Processing: " << modelName << ", shape #" << i << ", #indices " << mesh.indices.size() << std::endl;
+        LOG("Processing: %s, shape #%d, indices #%u", modelName.c_str(), i, mesh.indices.size());
         for (long j = 0; j < mesh.indices.size(); j++) {
             tinyobj::index_t i = mesh.indices[j];
             glm::vec3 position = {
@@ -87,7 +88,7 @@ void Model::load(int index, TextureStore *store) {
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *) (sizeof(float) * 6));
 
-    std::cout << "Model loading done: " << warnings << ", " << errors << ". " << std::endl;
+    LOG("Model loading done: %s, %s.", warnings.c_str(), errors.c_str());
 }
 
 void Model::render(StandardProgram &program) {

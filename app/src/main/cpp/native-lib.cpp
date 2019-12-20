@@ -60,7 +60,7 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_setAssetManager(JNIEnv *env, jobj
 extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobject instance) {
-    game = new Game();
+    game = new Game(resources);
     game->init();
     LOG("ImGui Initialized\n");
 }

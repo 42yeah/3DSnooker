@@ -3,6 +3,7 @@
 //
 
 #include "Resources.hpp"
+#include "WindowWrapper.hpp"
 #include <iostream>
 #include <string>
 #include <string>
@@ -11,6 +12,7 @@
 
 std::string Resources::readFileAsString(std::string path) {
     std::stringstream ss = readFileAsStringStream(path);
+    ss.seekg(0, ss.end);
     std::string raw = ss.str();
     return raw;
 }
@@ -26,5 +28,6 @@ std::stringstream Resources::readFileAsStringStream(std::string path) {
         }
         ss.write(buf, len);
     }
-    return ss;
+    ss.seekg(0, ss.beg);
+    return std::move(ss);
 }

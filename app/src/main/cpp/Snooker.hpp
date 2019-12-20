@@ -15,11 +15,12 @@
 #include "StandardProgram.hpp"
 #include "Model.hpp"
 #include "Entity.hpp"
+#include "Resources.hpp"
 
 
 class Snooker {
 public:
-    Snooker(WindowWrapper *wrapper);
+    Snooker(WindowWrapper *wrapper, Resources *loader);
     
     void init();
     void update();
@@ -59,6 +60,8 @@ private:
     glm::vec3 camPos;
     float rotation;
     float force;
+
+    Resources *resourceLoader;
     
     // === RANDOMNESS === //
     std::random_device dev;

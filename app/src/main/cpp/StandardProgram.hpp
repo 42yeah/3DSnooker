@@ -15,6 +15,7 @@
 #include "Ext/glm/glm.hpp"
 #include "Ext/glm/gtc/matrix_transform.hpp"
 #include "Ext/glm/gtc/type_ptr.hpp"
+#include "Resources.hpp"
 
 class Texture;
 
@@ -25,7 +26,7 @@ class Texture;
  */
 class StandardProgram {
 public:
-    StandardProgram() {}
+    StandardProgram(Resources *loader);
 
     void link(std::string vertexShaderPath, std::string fragmentShaderPath);
     GLuint compile(GLuint shaderType, std::string shaderPath);
@@ -36,6 +37,7 @@ public:
 
 private:
     GLuint program;
+    Resources *resourceLoader;
     
     // === LOCATIONS === //
     GLuint modelLoc, viewLoc, perspectiveLoc;

@@ -17,6 +17,10 @@
 #include "Snooker.hpp"
 
 
+Game::Game(Resources *loader) : resourceLoader(loader) {
+
+}
+
 void Game::init() {
     windowWrapper = new WindowWrapper();
     windowWrapper->init(1080, 1800, "Snooker3D");
@@ -112,7 +116,8 @@ void Game::startGame() {
 
     snookerGame->applyRegularCamera();
     snookerGame->renderSkybox();
-    snookerGame->renderTable();
+//    snookerGame->renderTable()
+    snookerGame->renderTestTriangle();
 //        snooker.renderTable();
 //        snooker.renderHoles();
 //        snooker.renderBalls();
@@ -176,6 +181,6 @@ void Game::updateEvent(glm::vec2 fingerPos, bool fingerPressed) {
 }
 
 void Game::initSnookerRuntime() {
-    snookerGame = new Snooker(windowWrapper);
+    snookerGame = new Snooker(windowWrapper, resourceLoader);
     snookerGame->init();
 }

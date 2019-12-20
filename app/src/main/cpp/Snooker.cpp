@@ -16,19 +16,15 @@
 #include "Model.hpp"
 
 
-Snooker::Snooker(WindowWrapper *wrapper) : windowWrapper(wrapper) {
+Snooker::Snooker(WindowWrapper *wrapper, Resources *loader) : windowWrapper(wrapper), resourceLoader(loader), program(loader) {
     
 }
 
 void Snooker::init() {
     globalRotation = glm::mat4(1.0f);
-    
-    // === POOL TABLE === //
 
-    
     // === TEST DATA === //
-    program.link("Assets/standard.vertex.glsl",
-            "Assets/standard.fragment.glsl");
+    program.link("shaders/standard.vertex.glsl", "shaders/standard.fragment.glsl");
 
     // TODO: Fixme
 //    glGenVertexArrays(1, &testTriangleVAO);
@@ -50,11 +46,11 @@ void Snooker::init() {
     
     glEnable(GL_DEPTH_TEST);
 
-    billiardTable = Model("Assets/PoolTable/PoolTable.obj", "Assets/PoolTable");
-    billiardTable.load(-1, &textureStore);
-    loadBallModels();
-    cue = Model("Assets/Cue/PoolCue.obj", "Assets/Cue");
-    cue.load(-1, &textureStore);
+//    billiardTable = Model("Assets/PoolTable/PoolTable.obj", "Assets/PoolTable");
+//    billiardTable.load(-1, &textureStore);
+//    loadBallModels();
+//    cue = Model("Assets/Cue/PoolCue.obj", "Assets/Cue");
+//    cue.load(-1, &textureStore);
     
     // === TIME === //
     lastInstant = epoch();
@@ -147,7 +143,7 @@ void Snooker::renderTestTriangle() {
     program.use();
     // TODO: Fixme
 //    glBindVertexArray(testTriangleVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+//    glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 void Snooker::update() {
