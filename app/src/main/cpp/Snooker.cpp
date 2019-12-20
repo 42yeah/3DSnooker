@@ -49,6 +49,8 @@ void Snooker::init() {
     // === TIME === //
     lastInstant = epoch();
     cachedRotation = rotation = 0.0f;
+    ballsMovingTime = 0.0f;
+    aim = 0.0f;
     previousFingerState = false;
     distrib = new std::uniform_real_distribution<float>(-1.0f, 1.0f);
     force = 0.0f;
@@ -90,11 +92,11 @@ void Snooker::init() {
             }
             currentRow++;
         }
-        ball.velocity = glm::vec3(1.2f, 0.0f, 2.1f);
-        if (ball.type != SELF) {
+//        ball.velocity = glm::vec3(1.2f, 0.0f, 2.1f);
+//        if (ball.type != SELF) {
 //            ball.position = glm::vec3(distrib(dev) * 1.5f, 0.0525f, distrib(dev) * 0.7f);
-            ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-        }
+//            ball.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+//        }
         entities.push_back(ball);
     }
     
@@ -143,6 +145,20 @@ void Snooker::update() {
         Entity &entity = entities[i];
         entity.update(deltaTime, &entities, &holes, i);
     }
+    if (ballsMoving()) {
+        ballsMovingTime += deltaTime;
+        return;
+    } else {
+        ballsMovingTime *= 0.9f;
+        if (ballsMovingTime <= 0.001f && ballsMovingTime != 0.0f) {
+            ballsMovingTime = 0.0f;
+            processTurn();
+        }
+    }
+
+    if (entities[0].holed) {
+        return;
+    }
 
     camPos.y -= 1.0f;
     glm::vec3 ray = glm::normalize(entities[0].position - camPos);
@@ -156,27 +172,12 @@ void Snooker::update() {
                                   cosine + glm::radians(180.0f),
                                   sighting
                                   );
-    
-//    if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_SPACE)) {
-//        force += deltaTime * 10.0f;
-//        if (force >= 11.0f) { force = 11.0f; }
-//    } else if (force != 0.0f && !glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_SPACE)) {
-//        ray.y = 0.0f;
-//        entities[0].velocity = glm::normalize(ray) * force;
-//        force = 0.0f;
-//    }
-//    if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_A)) {
-//        rotation -= 1.57f * deltaTime;
-//    }
-//    if (glfwGetKey((GLFWwindow *) windowWrapper->getNativeWindow(), GLFW_KEY_D)) {
-//        rotation += 1.57f * deltaTime;
-//    }
 }
 
 void Snooker::applyRegularCamera() {
-    camPos = glm::vec3(entities[0].position.x - 3.2f * cosf(rotation), 0.8f, entities[0].position.z - 3.2f * sinf(rotation));
+    camPos = glm::vec3(entities[0].position.x - 3.2f * cosf(rotation + ballsMovingTime * 0.5f), 0.8f + ballsMovingTime - aim, entities[0].position.z - 3.2f * sinf(rotation + ballsMovingTime * 0.5f));
 //    view = glm::lookAt(glm::vec3(3.0f * cosf(t), 1.5f, sinf(t) * 1.0f), entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
-    view = glm::lookAt(camPos, entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(camPos, entities[0].position * expf(-ballsMovingTime * 0.01f), glm::vec3(0.0f, 1.0f, 0.0f));
     perspective = glm::perspective(glm::radians(45.0f),
                                    windowWrapper->getFrameBufferSize().x / windowWrapper->getFrameBufferSize().y,
                                    0.01f,
@@ -215,7 +216,7 @@ void Snooker::handleEvent(bool down, glm::vec2 pos) {
         } else {
             rotation = cachedRotation + deltaDeg;
         }
-        if (deltaY >= 0.1f) {
+        if (deltaY >= 0.1f && !ballsMoving()) {
             force = fmin(deltaY - 0.1f, 0.3f) / 0.3f * 11.0f;
             if (!down) {
                 glm::vec3 ray = glm::normalize(entities[0].position - camPos);
@@ -226,6 +227,38 @@ void Snooker::handleEvent(bool down, glm::vec2 pos) {
         } else {
             force = 0.0f;
         }
+        if (deltaY <= -0.1f && !ballsMoving()) {
+            aim = fmin(fabs(deltaY) - 0.1f, 0.3f) / 0.3f * 0.8f;
+        }
+    } else {
+        aim *= 0.5f;
     }
     previousFingerState = down;
+}
+
+bool Snooker::ballsMoving() {
+    for (int i = 0; i < entities.size(); i++) {
+        if (entities[i].velocity != glm::vec3(0.0f)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Snooker::processTurn() {
+    if (entities[0].holed) {
+        entities[0].holed = false;
+        while (true) {
+            entities[0].position = glm::vec3(distrib->operator()(dev) * 1.7f, 0.0525f, distrib->operator()(dev) * 0.7f);
+            int i;
+            for (i = 1; i < entities.size(); i++) {
+                if (glm::length(entities[i].position - entities[0].position) <= 2.0f * entities[0].radius) {
+                    break;
+                }
+            }
+            if (i == entities.size()) {
+                break;
+            }
+        }
+    }
 }

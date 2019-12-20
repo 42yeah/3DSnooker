@@ -30,6 +30,7 @@ public:
     void renderCueStick();
     void applyRegularCamera();
     void handleEvent(bool down, glm::vec2 pos);
+    void processTurn();
     
     // === HELPERS === //
     void loadBallModels();
@@ -40,6 +41,9 @@ public:
     void renderTestCube();
 
 private:
+    bool ballsMoving();
+    float ballsMovingTime;
+
     WindowWrapper *windowWrapper;
     glm::mat4 globalRotation;
     
@@ -61,6 +65,7 @@ private:
     float cachedRotation;
     float rotation;
     float force;
+    float aim;
     bool previousFingerState;
     glm::vec2 fingerPosWhenDown;
 
