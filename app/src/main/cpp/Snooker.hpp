@@ -16,7 +16,12 @@
 #include "Model.hpp"
 #include "Entity.hpp"
 #include "Resources.hpp"
+#include "SnookerController.hpp"
 
+
+enum WinningResult {
+    COMPETITING, HUMAN, STUPID_NPC, DRAW
+};
 
 class Snooker {
 public:
@@ -31,23 +36,21 @@ public:
     void applyRegularCamera();
     void handleEvent(bool down, glm::vec2 pos);
     void processTurn();
+    WinningResult getWinner();
     
     // === HELPERS === //
     void loadBallModels();
     double epoch();
+    bool ballsMoving();
     
     // === TEST CODES === //
     void renderTestTriangle();
     void renderTestCube();
 
 private:
-    bool ballsMoving();
     float ballsMovingTime;
 
     WindowWrapper *windowWrapper;
-    glm::mat4 globalRotation;
-    
-    GLuint poolTableVAO;
     
     // === CAMERA === //
     glm::mat4 view, perspective;
@@ -56,24 +59,31 @@ private:
     Model billiardTable;
     std::vector<Model> ballModels;
     Model cue;
+
+public:
     std::vector<Entity> entities;
     std::vector<glm::vec3> holes;
     StandardProgram program;
     TextureStore textureStore;
     double lastInstant;
+    float deltaTime;
     glm::vec3 camPos;
     float cachedRotation;
     float rotation;
     float force;
     float aim;
-    bool previousFingerState;
-    glm::vec2 fingerPosWhenDown;
+    std::vector<SnookerController *> controllers;
+    int controllingController;
+    bool fingerDown;
+    glm::vec2 fingerPos;
+    Entity *deathCamTarget;
 
-    Resources *resourceLoader;
-    
     // === RANDOMNESS === //
     std::random_device dev;
     std::uniform_real_distribution<float> *distrib;
+
+private:
+    Resources *resourceLoader;
 
     // === TEST DATA === //
     GLuint testTriangleVBO;

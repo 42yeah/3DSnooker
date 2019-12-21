@@ -15,15 +15,22 @@
 #include "Ext/imgui/implements/imgui_impl_opengl3.h"
 #include "Ext/glm/glm.hpp"
 #include "Snooker.hpp"
+#include "Macros.hpp"
 
 
+// === THREADED CONTENTS === //
+void establishServer(Game *game) {
+}
+
+
+// === MAIN GAME === //
 Game::Game(Resources *loader) : resourceLoader(loader) {
 
 }
 
-void Game::init() {
+void Game::init(int w, int h) {
     windowWrapper = new WindowWrapper();
-    windowWrapper->init(1080, 1800, "Snooker3D");
+    windowWrapper->init(w, h, "Snooker3D");
     fingerPos = glm::vec2(0.0f, 0.0f);
     this->renderState = MENU;
     fingerPressed = false;
@@ -56,6 +63,9 @@ void Game::render() {
 
     case SNOOKER:
         startGame();
+        break;
+
+    case OPTIONS:
         break;
     }
 }
@@ -104,8 +114,23 @@ void Game::showImGuiDemoWindow() {
     windowWrapper->swapBuffers();
 }
 
-void Game::showWinner() {
-    
+int Game::showWinner() {
+    if (renderState == SNOOKER) {
+        switch (snookerGame->getWinner()) {
+        case COMPETITING:
+            return 0;
+
+        case HUMAN:
+            return 1;
+
+        case STUPID_NPC:
+            return 2;
+
+        case DRAW:
+            return 3;
+        }
+    }
+    return 0;
 }
 
 void Game::startGame() {
@@ -126,14 +151,6 @@ void Game::startGame() {
 }
 
 void Game::startOption() {
-    
-}
-
-bool Game::hasWinner() {
-    return false;
-}
-
-void Game::processTurn() {
     
 }
 

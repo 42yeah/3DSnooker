@@ -28,15 +28,13 @@ public:
     Game() {}
     Game(Resources *loader);
 
-    void init();
+    void init(int w, int h);
     void render();
     Result showMenu();
-    void showWinner();
     void showImGuiDemoWindow();
     void startGame();
     void startOption();
-    bool hasWinner();
-    void processTurn();
+    int showWinner();
     void updateEvent(glm::vec2 fingerPos, bool fingerPressed);
 
     WindowWrapper *getWindowWrapper();

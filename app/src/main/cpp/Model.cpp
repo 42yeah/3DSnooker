@@ -14,7 +14,7 @@
 #include "Ext/tiny_obj_loader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "Ext/stb_image.h"
-#include "WindowWrapper.hpp"
+#include "Macros.hpp"
 
 
 Model::Model(std::string objPath, std::string mtlPath, std::string baseDir) {

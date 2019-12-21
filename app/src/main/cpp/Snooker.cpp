@@ -14,6 +14,7 @@
 #include "Ext/glm/gtc/matrix_transform.hpp"
 #include "Ext/glm/gtc/type_ptr.hpp"
 #include "Model.hpp"
+#include "Macros.hpp"
 
 
 Snooker::Snooker(WindowWrapper *wrapper, Resources *loader) : windowWrapper(wrapper), resourceLoader(loader), program(loader), textureStore(loader) {
@@ -21,8 +22,6 @@ Snooker::Snooker(WindowWrapper *wrapper, Resources *loader) : windowWrapper(wrap
 }
 
 void Snooker::init() {
-    globalRotation = glm::mat4(1.0f);
-
     // === TEST DATA === //
     program.link("shaders/standard.vertex.glsl", "shaders/standard.fragment.glsl");
 
@@ -48,12 +47,13 @@ void Snooker::init() {
 
     // === TIME === //
     lastInstant = epoch();
+    this->deltaTime = 0.0f;
     cachedRotation = rotation = 0.0f;
     ballsMovingTime = 0.0f;
     aim = 0.0f;
-    previousFingerState = false;
     distrib = new std::uniform_real_distribution<float>(-1.0f, 1.0f);
     force = 0.0f;
+    deathCamTarget = nullptr;
     
     // === ENTITIES === //
     int indices[] = {
@@ -72,7 +72,7 @@ void Snooker::init() {
             entityType = SELF;
         } else if (i >= 1 && i <= 7) {
             entityType = FRIEND;
-        } else if (i >= 8 && i <= 15) {
+        } else if (i >= 8 && i < 15) {
             entityType = FOE;
         } else {
             entityType = BLACK;
@@ -107,6 +107,12 @@ void Snooker::init() {
     holes.push_back(glm::vec3(-2.0f, 0.0f, 1.0f));
     holes.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
     holes.push_back(glm::vec3(2.0f, 0.0f, 1.0f));
+
+    // === CONTROLLERS === //
+    controllers.push_back(new PlayerSnookerController(this, FRIEND));
+    controllers.push_back(new NPSnookerController(this, FOE));
+    controllingController = 0;
+    controllers[controllingController]->notifyTurnArrived();
 }
 
 void Snooker::renderSkybox() {
@@ -139,12 +145,22 @@ void Snooker::renderTestTriangle() {
 
 void Snooker::update() {
     double thisInstant = epoch();
-    float deltaTime = (float) (thisInstant - lastInstant);
+    this->deltaTime = (float) (thisInstant - lastInstant);
     lastInstant = thisInstant;
     for (int i = 0; i < entities.size(); i++) {
         Entity &entity = entities[i];
         entity.update(deltaTime, &entities, &holes, i);
+
+        if (entity.holed && entity.velocity != glm::vec3(0.0f)) {
+            deathCamTarget = &entity;
+        }
+        if (entity.type == BLACK && entity.holed && entity.velocity == glm::vec3(0.0f)) {
+            // We have a WINNER! (Or loser)
+//            LOG("WINNER OF ROUND: %d", getWinner());
+            return;
+        }
     }
+
     if (ballsMoving()) {
         ballsMovingTime += deltaTime;
         return;
@@ -175,13 +191,20 @@ void Snooker::update() {
 }
 
 void Snooker::applyRegularCamera() {
-    camPos = glm::vec3(entities[0].position.x - 3.2f * cosf(rotation + ballsMovingTime * 0.5f), 0.8f + ballsMovingTime - aim, entities[0].position.z - 3.2f * sinf(rotation + ballsMovingTime * 0.5f));
+    Entity *entity = &entities[0];
+    if (deathCamTarget && entity->velocity != glm::vec3(0.0f)) {
+        entity = deathCamTarget;
+    }
+    if (deathCamTarget && deathCamTarget->velocity == glm::vec3(0.0f)) {
+        deathCamTarget = nullptr;
+    }
+    camPos = glm::vec3(entity->position.x - 3.2f * cosf(rotation + ballsMovingTime * 0.5f), 0.8f + (ballsMovingTime * 0.1f) - aim, entity->position.z - 3.2f * sinf(rotation + ballsMovingTime * 0.5f));
 //    view = glm::lookAt(glm::vec3(3.0f * cosf(t), 1.5f, sinf(t) * 1.0f), entities[0].position, glm::vec3(0.0f, 1.0f, 0.0f));
-    view = glm::lookAt(camPos, entities[0].position * expf(-ballsMovingTime * 0.01f), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(camPos, entity->position * expf(-ballsMovingTime * 0.01f), glm::vec3(0.0f, 1.0f, 0.0f));
     perspective = glm::perspective(glm::radians(45.0f),
                                    windowWrapper->getFrameBufferSize().x / windowWrapper->getFrameBufferSize().y,
                                    0.01f,
-                                   200.0f);
+                                   2000.0f);
 
     // === APPLY TO TEST SHADER === //
     program.applyVP(view, perspective);
@@ -203,37 +226,10 @@ double Snooker::epoch() {
 }
 
 void Snooker::handleEvent(bool down, glm::vec2 pos) {
-    if (down && !previousFingerState) {
-        fingerPosWhenDown = pos;
-    }
-    if (previousFingerState) {
-        float deltaX = pos.x - fingerPosWhenDown.x;
-        float deltaY = pos.y - fingerPosWhenDown.y;
-        float deltaDeg = deltaX * (PI / 2.0f);
-        if (!down) {
-            cachedRotation = cachedRotation + deltaDeg;
-            rotation = cachedRotation;
-        } else {
-            rotation = cachedRotation + deltaDeg;
-        }
-        if (deltaY >= 0.1f && !ballsMoving()) {
-            force = fmin(deltaY - 0.1f, 0.3f) / 0.3f * 11.0f;
-            if (!down) {
-                glm::vec3 ray = glm::normalize(entities[0].position - camPos);
-                ray.y = 0.0f;
-                entities[0].velocity = glm::normalize(ray) * force;
-                force = 0.0f;
-            }
-        } else {
-            force = 0.0f;
-        }
-        if (deltaY <= -0.1f && !ballsMoving()) {
-            aim = fmin(fabs(deltaY) - 0.1f, 0.3f) / 0.3f * 0.8f;
-        }
-    } else {
-        aim *= 0.5f;
-    }
-    previousFingerState = down;
+    this->fingerDown = down;
+    this->fingerPos = pos;
+
+    controllers[controllingController]->process();
 }
 
 bool Snooker::ballsMoving() {
@@ -261,4 +257,55 @@ void Snooker::processTurn() {
             }
         }
     }
+    // swap controllers...
+    controllingController = 1 - controllingController;
+    controllers[controllingController]->notifyTurnArrived();
+}
+
+WinningResult Snooker::getWinner() {
+    int friendCount = 0, foeCount = 0, blackBallCount = 0, whiteBallCount = 0;
+    for (int i = 0; i < entities.size(); i++) {
+        if (entities[i].holed) { continue; }
+        switch (entities[i].type) {
+        case FRIEND:
+            friendCount++;
+            break;
+
+        case FOE:
+            foeCount++;
+            break;
+
+        case BLACK:
+            blackBallCount++;
+            break;
+
+        case SELF:
+            whiteBallCount++;
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    if (foeCount == 0 && friendCount == 0 && blackBallCount == 0 && whiteBallCount != 0) {
+        return DRAW;
+    } else if (friendCount == 0 && blackBallCount == 0 && whiteBallCount != 0) {
+        return HUMAN;
+    } else if (foeCount == 0 && blackBallCount == 0 && whiteBallCount != 0) {
+        return STUPID_NPC;
+    } else if (blackBallCount == 0) {
+        switch (controllingController) {
+            case 0:
+                return STUPID_NPC;
+
+            case 1:
+                return HUMAN;
+
+            default:
+                break;
+        }
+    }
+
+    return COMPETITING;
 }

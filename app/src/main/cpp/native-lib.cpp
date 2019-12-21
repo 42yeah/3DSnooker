@@ -8,6 +8,7 @@
 #include <cmath>
 #include "Resources.hpp"
 #include "Game.hpp"
+#include "Macros.hpp"
 
 
 // === TESTS === //
@@ -59,9 +60,9 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_setAssetManager(JNIEnv *env, jobj
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobject instance) {
+Java_aiofwa_org_a3dsnooker_game_EngineRenderer_surfaceCreated(JNIEnv *env, jobject instance, jint initialW, jint initialH) {
     game = new Game(resources);
-    game->init();
+    game->init(initialW, initialH);
     LOG("ImGui Initialized\n");
 }
 
@@ -77,4 +78,10 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject instance) {
     game->render();
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_aiofwa_org_a3dsnooker_game_Engine_getSnookerWinner(JNIEnv *env, jobject thiz) {
+    return game->showWinner();
 }

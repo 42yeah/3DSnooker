@@ -10,7 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include "Model.hpp"
-#include "WindowWrapper.hpp"
+#include "Macros.hpp"
 
 
 StandardProgram::StandardProgram(Resources *loader) {

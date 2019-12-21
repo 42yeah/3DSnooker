@@ -12,7 +12,7 @@ public class Engine extends GLSurfaceView {
     public Engine(Context context) {
         super(context);
         this.context = context;
-        this.engineRenderer = new EngineRenderer(context);
+        this.engineRenderer = new EngineRenderer(this, context);
         this.setEGLContextClientVersion(2);
         this.setEGLConfigChooser(new EngineConfigChooser());
         setRenderer(this.engineRenderer);
@@ -31,6 +31,7 @@ public class Engine extends GLSurfaceView {
     }
 
     public native void motionEvent(int action, float x, float y);
+    public native int getSnookerWinner();
 
     // === VARIABLES === //
     Context context;

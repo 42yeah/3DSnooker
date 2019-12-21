@@ -11,7 +11,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class EngineRenderer implements GLSurfaceView.Renderer {
     // === CONSTRUCTORS === //
-    public EngineRenderer(Context context) {
+    public EngineRenderer(Engine engine, Context context) {
+        this.engine = engine;
         this.context = context;
     }
 
@@ -19,7 +20,7 @@ public class EngineRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         setAssetManager(context.getAssets());
-        surfaceCreated();
+        surfaceCreated(engine.getWidth(), engine.getHeight());
     }
 
     @Override
@@ -38,10 +39,11 @@ public class EngineRenderer implements GLSurfaceView.Renderer {
     }
 
     public native void setAssetManager(AssetManager manager);
-    public native void surfaceCreated();
+    public native void surfaceCreated(int initialW, int initialH);
     public native void surfaceChanged(int w, int h);
     public native void render();
 
     // === VARIABLES === //
     Context context;
+    Engine engine;
 }
