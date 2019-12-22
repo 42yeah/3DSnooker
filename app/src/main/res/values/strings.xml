@@ -7,4 +7,9 @@
     <string name="npc_win">计算机胜利！按 "返回" 以返回主菜单。</string>
     <string name="draw">比赛打平。（这怎么可能？！）按 "返回" 以返回主菜单。</string>
     <string name="main_menu">返回主菜单</string>
+
+    <string name="achievement_usable_back">返回键是可以摁的</string>
+    <string name="achievement_win">战胜了只会向花色球直线开球的电脑！现在你一定感觉不错！</string>
+    <string name="achievement_lose">输给了这么菜的电脑</string>
+    <string name="achievement_draw">打平</string>
 </resources>

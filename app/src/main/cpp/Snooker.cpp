@@ -132,6 +132,7 @@ void Snooker::reset() {
         ball.position = currentPos;
         ball.velocity = glm::vec3(0.0f);
         ball.acceleration = glm::vec3(0.0f);
+        ball.holed = false;
         if (i == 0) {
             currentPos = glm::vec3(0.3f, 0.0525f, 0.0f);
         }

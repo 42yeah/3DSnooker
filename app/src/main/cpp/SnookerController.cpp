@@ -30,12 +30,6 @@ void PlayerSnookerController::process() {
         float deltaX = pos.x - fingerPosWhenDown.x;
         float deltaY = pos.y - fingerPosWhenDown.y;
         float deltaDeg = deltaX * (PI / 2.0f);
-        if (!instance->fingerDown) {
-            instance->cachedRotation = instance->cachedRotation + deltaDeg;
-            instance->rotation = instance->cachedRotation;
-        } else {
-            instance->rotation = instance->cachedRotation + deltaDeg;
-        }
         if (deltaY >= 0.1f && !instance->ballsMoving() && processingTurn) {
             instance->force = fmin(deltaY - 0.1f, 0.3f) / 0.3f * 11.0f;
             if (!instance->fingerDown) {
@@ -47,6 +41,12 @@ void PlayerSnookerController::process() {
             }
         } else {
             instance->force = 0.0f;
+            if (!instance->fingerDown) {
+                instance->cachedRotation = instance->cachedRotation + deltaDeg;
+                instance->rotation = instance->cachedRotation;
+            } else {
+                instance->rotation = instance->cachedRotation + deltaDeg;
+            }
         }
         if (deltaY <= -0.1f && !instance->ballsMoving()) {
             instance->aim = fmin(fabs(deltaY) - 0.1f, 0.3f) / 0.3f * 0.8f;
@@ -86,7 +86,7 @@ void NPSnookerController::process() {
     float deltaAngle = expectedRotation - instance->rotation;
     instance->rotation += deltaAngle * instance->deltaTime;
     instance->cachedRotation = instance->rotation;
-    if (fabs(deltaAngle) <= 0.01f || instance->force > 0.0f) {
+    if (fabs(deltaAngle) <= 0.1f || instance->force > 0.0f) {
         float deltaForce = expectedForce - instance->force;
         instance->force += deltaForce * instance->deltaTime;
         if (fabs(deltaForce) <= 0.1f) {

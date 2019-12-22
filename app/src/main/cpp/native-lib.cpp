@@ -16,7 +16,7 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_aiofwa_org_a3dsnooker_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
-    std::string hello = "NDK works. Loading from Snooker Engine...";
+    std::string hello = "JNI works. Loading from Snooker Engine...";
 
     return env->NewStringUTF(hello.c_str());
 }
