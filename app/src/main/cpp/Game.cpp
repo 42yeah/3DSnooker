@@ -200,3 +200,10 @@ void Game::initSnookerRuntime() {
     snookerGame = new Snooker(windowWrapper, resourceLoader);
     snookerGame->init();
 }
+
+int Game::getControllingController() {
+    if (renderState == SNOOKER) {
+        return snookerGame->getControllingController();
+    }
+    return -1;
+}

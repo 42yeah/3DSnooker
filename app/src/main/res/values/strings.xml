@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">3DSnooker</string>
+    <string name="test">Announcement Board is here</string>
+    <string name="your_turn">你的回合。你需要击打全色球。全色球击打完毕后，你需要击打黑球。</string>
+    <string name="npc_turn">计算机的回合。计算机需要击打花色球。花色球击打完毕后，计算机需要击打黑球。</string>
+    <string name="you_win">你赢了！</string>
+    <string name="npc_win">计算机胜利！</string>
+    <string name="draw">比赛打平。</string>
 </resources>

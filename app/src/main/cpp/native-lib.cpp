@@ -16,7 +16,7 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_aiofwa_org_a3dsnooker_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
-    std::string hello = "Hello from C++";
+    std::string hello = "NDK works. Loading from Snooker Engine...";
 
     return env->NewStringUTF(hello.c_str());
 }
@@ -83,5 +83,17 @@ Java_aiofwa_org_a3dsnooker_game_EngineRenderer_render(JNIEnv *env, jobject insta
 extern "C"
 JNIEXPORT jint JNICALL
 Java_aiofwa_org_a3dsnooker_game_Engine_getSnookerWinner(JNIEnv *env, jobject thiz) {
+    if (!game) {
+        return 0;
+    }
     return game->showWinner();
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_aiofwa_org_a3dsnooker_game_Engine_getSnookerControllingController(JNIEnv *env, jobject thiz) {
+    if (!game) {
+        return -1;
+    }
+    return game->getControllingController();
 }

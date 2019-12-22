@@ -32,6 +32,7 @@ public class Engine extends GLSurfaceView {
 
     public native void motionEvent(int action, float x, float y);
     public native int getSnookerWinner();
+    public native int getSnookerControllingController();
 
     // === VARIABLES === //
     Context context;

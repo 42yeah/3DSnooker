@@ -28,11 +28,13 @@ class PlayerSnookerController : public SnookerController {
 public:
     PlayerSnookerController(Snooker *snookerGame, EntityType ballType);
 
+    virtual void notifyTurnArrived() override;
     virtual void process() override;
 
 private:
     bool previousFingerDown;
     glm::vec2 fingerPosWhenDown;
+    bool processingTurn;
 };
 
 class NPSnookerController : public SnookerController {

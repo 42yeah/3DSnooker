@@ -37,6 +37,7 @@ public:
     void handleEvent(bool down, glm::vec2 pos);
     void processTurn();
     WinningResult getWinner();
+    int getControllingController();
     
     // === HELPERS === //
     void loadBallModels();

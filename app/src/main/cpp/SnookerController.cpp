@@ -16,6 +16,11 @@ PlayerSnookerController::PlayerSnookerController(Snooker *snookerGame, EntityTyp
 
 }
 
+void PlayerSnookerController::notifyTurnArrived() {
+    SnookerController::notifyTurnArrived();
+    processingTurn = true;
+}
+
 void PlayerSnookerController::process() {
     glm::vec2 pos = instance->fingerPos;
     if (instance->fingerDown && !previousFingerDown) {
@@ -31,13 +36,14 @@ void PlayerSnookerController::process() {
         } else {
             instance->rotation = instance->cachedRotation + deltaDeg;
         }
-        if (deltaY >= 0.1f && !instance->ballsMoving()) {
+        if (deltaY >= 0.1f && !instance->ballsMoving() && processingTurn) {
             instance->force = fmin(deltaY - 0.1f, 0.3f) / 0.3f * 11.0f;
             if (!instance->fingerDown) {
                 glm::vec3 ray = glm::normalize(instance->entities[0].position - instance->camPos);
                 ray.y = 0.0f;
                 instance->entities[0].velocity = glm::normalize(ray) * instance->force;
                 instance->force = 0.0f;
+                processingTurn = false;
             }
         } else {
             instance->force = 0.0f;

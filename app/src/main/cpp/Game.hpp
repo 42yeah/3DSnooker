@@ -34,11 +34,14 @@ public:
     void showImGuiDemoWindow();
     void startGame();
     void startOption();
-    int showWinner();
     void updateEvent(glm::vec2 fingerPos, bool fingerPressed);
 
     WindowWrapper *getWindowWrapper();
     ImGuiIO *getImGuiIO();
+
+    // === SNOOKER-RELATED FUNCS === //
+    int showWinner();
+    int getControllingController();
 
 private:
     void initImGui();
