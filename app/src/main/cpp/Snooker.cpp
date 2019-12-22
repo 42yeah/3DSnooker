@@ -289,6 +289,16 @@ WinningResult Snooker::getWinner() {
     }
 
     if (foeCount == 0 && friendCount == 0 && blackBallCount == 0 && whiteBallCount != 0) {
+        switch (controllingController) {
+            case 0:
+                return HUMAN;
+
+            case 1:
+                return STUPID_NPC;
+
+            default:
+                break;
+        }
         return DRAW;
     } else if (friendCount == 0 && blackBallCount == 0 && whiteBallCount != 0) {
         return HUMAN;
