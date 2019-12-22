@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_play">
+
+    <fragment
+        android:id="@+id/navigation_play"
+        android:name="aiofwa.org.a3dsnooker.ui.play.PlayFragment"
+        android:label="@string/title_play"
+        tools:layout="@layout/fragment_achievement" />
+
+    <fragment
+        android:id="@+id/navigation_achievement"
+        android:name="aiofwa.org.a3dsnooker.ui.achievement.AchievementFragment"
+        android:label="@string/title_achievement"
+        tools:layout="@layout/fragment_play" />
+
+    <fragment
+        android:id="@+id/navigation_rank"
+        android:name="aiofwa.org.a3dsnooker.ui.rank.RankFragment"
+        android:label="@string/title_rank"
+        tools:layout="@layout/fragment_rank" />
+</navigation>

@@ -16,6 +16,7 @@ public class Engine extends GLSurfaceView {
         this.setEGLContextClientVersion(2);
         this.setEGLConfigChooser(new EngineConfigChooser());
         setRenderer(this.engineRenderer);
+//        setRenderMode(RENDERMODE_WHEN_DIRTY);
         this.setOnTouchListener(new OnTouchListener());
     }
 

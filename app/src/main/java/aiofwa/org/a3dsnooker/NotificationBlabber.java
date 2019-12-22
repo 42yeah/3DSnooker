@@ -67,7 +67,7 @@ public class NotificationBlabber extends Service {
     private int notificationID;
     private BlabberBinder binder;
 
-    class BlabberBinder extends Binder {
+    public class BlabberBinder extends Binder {
         public BlabberBinder() {}
         public BlabberBinder(NotificationBlabber service) {
             this.service = service;
