@@ -26,7 +26,8 @@ enum WinningResult {
 class Snooker {
 public:
     Snooker(WindowWrapper *wrapper, Resources *loader);
-    
+
+    void reset();
     void init();
     void update();
     void renderSkybox();
@@ -46,7 +47,6 @@ public:
     
     // === TEST CODES === //
     void renderTestTriangle();
-    void renderTestCube();
 
 private:
     float ballsMovingTime;

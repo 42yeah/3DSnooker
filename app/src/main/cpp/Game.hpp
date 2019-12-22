@@ -28,10 +28,11 @@ public:
     Game() {}
     Game(Resources *loader);
 
+    void backToMainMenu();
     void init(int w, int h);
     void render();
-    Result showMenu();
     void showImGuiDemoWindow();
+    Result showMenu();
     void startGame();
     void startOption();
     void updateEvent(glm::vec2 fingerPos, bool fingerPressed);

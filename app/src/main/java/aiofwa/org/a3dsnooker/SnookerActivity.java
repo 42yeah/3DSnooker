@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +27,10 @@ public class SnookerActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 1.0f
         );
+        ViewGroup.LayoutParams wrapContent = new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
         engineWrapper = new LinearLayout(this);
         engineWrapper.setOrientation(LinearLayout.VERTICAL);
         engineWrapper.setLayoutParams(matchParent);
@@ -34,10 +39,7 @@ public class SnookerActivity extends AppCompatActivity {
         engineWrapper.addView(gameEngine);
 
         gameInfo = new TextView(this);
-        gameInfo.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
+        gameInfo.setLayoutParams(wrapContent);
         gameInfo.setBackgroundColor(Color.rgb(0, 0, 0));
         gameInfo.setTextColor(Color.WHITE);
         gameInfo.setText(getString(R.string.test));
@@ -95,6 +97,11 @@ public class SnookerActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return super.onGenericMotionEvent(event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        gameEngine.backToMainMenu();
     }
 
     // === VARIABLES === //

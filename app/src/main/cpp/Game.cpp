@@ -33,6 +33,7 @@ void Game::init(int w, int h) {
     windowWrapper->init(w, h, "Snooker3D");
     fingerPos = glm::vec2(0.0f, 0.0f);
     this->renderState = MENU;
+    this->snookerGame = nullptr;
     fingerPressed = false;
     initImGui();
 }
@@ -85,13 +86,13 @@ Result Game::showMenu() {
     ImGui::SetWindowSize({ windowWrapper->getWindowSize().x, 300 });
     ImGui::SetWindowPos({ 0, 0 });
     ImGui::Text("Welcome to Snooker3D. It is still in\nvery very early alpha.");
-    if (ImGui::CollapsingHeader("Start Game")) {
+    if (ImGui::Button("Start Game")) {
         result = START_GAME;
     }
-    if (ImGui::CollapsingHeader("Options")) {
-        result = START_OPTION;
-    }
-    if (ImGui::CollapsingHeader("Exit")) {
+//    if (ImGui::Button("Options")) {
+//        result = START_OPTION;
+//    }
+    if (ImGui::Button("Exit")) {
         result = EXIT;
     }
     ImGui::End();
@@ -197,8 +198,13 @@ void Game::updateEvent(glm::vec2 fingerPos, bool fingerPressed) {
 }
 
 void Game::initSnookerRuntime() {
-    snookerGame = new Snooker(windowWrapper, resourceLoader);
-    snookerGame->init();
+    if (!snookerGame) {
+        snookerGame = new Snooker(windowWrapper, resourceLoader);
+        snookerGame->init();
+    } else {
+        snookerGame->reset();
+    }
+
 }
 
 int Game::getControllingController() {
@@ -206,4 +212,8 @@ int Game::getControllingController() {
         return snookerGame->getControllingController();
     }
     return -1;
+}
+
+void Game::backToMainMenu() {
+    this->renderState = MENU;
 }

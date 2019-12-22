@@ -97,3 +97,9 @@ Java_aiofwa_org_a3dsnooker_game_Engine_getSnookerControllingController(JNIEnv *e
     }
     return game->getControllingController();
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_aiofwa_org_a3dsnooker_game_Engine_backToMainMenu(JNIEnv *env, jobject thiz) {
+    game->backToMainMenu();
+}

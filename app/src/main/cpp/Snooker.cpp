@@ -115,6 +115,43 @@ void Snooker::init() {
     controllers[controllingController]->notifyTurnArrived();
 }
 
+void Snooker::reset() {
+    lastInstant = epoch();
+    this->deltaTime = 0.0f;
+    cachedRotation = rotation = 0.0f;
+    ballsMovingTime = 0.0f;
+    aim = 0.0f;
+    force = 0.0f;
+    deathCamTarget = nullptr;
+
+    glm::vec3 currentPos(-1.2f, 0.0525f, 0.0f);
+    int numRows = 1;
+    int currentRow = 1;
+    for (int i = 0; i < 16; i++) {
+        Entity &ball = entities[i];
+        ball.position = currentPos;
+        ball.velocity = glm::vec3(0.0f);
+        ball.acceleration = glm::vec3(0.0f);
+        if (i == 0) {
+            currentPos = glm::vec3(0.3f, 0.0525f, 0.0f);
+        }
+        if (i >= 1) {
+            currentPos.z += 0.0526f * 2.0f;
+            std::cout << "Row #" << numRows << std::endl;
+            if (currentRow > numRows - 1) {
+                currentRow = 0;
+                numRows++;
+                currentPos.x += 0.0526f * 2.0f;
+                currentPos.z = -0.0526f * 2.0f * numRows / 2.0f + 0.0526f;
+            }
+            currentRow++;
+        }
+    }
+
+    controllingController = 0;
+    controllers[controllingController]->notifyTurnArrived();
+}
+
 void Snooker::renderSkybox() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
