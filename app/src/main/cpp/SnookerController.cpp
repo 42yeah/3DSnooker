@@ -63,8 +63,10 @@ void NPSnookerController::notifyTurnArrived() {
             // Let's aim at this!
             glm::vec3 connection = glm::normalize(entity.position - instance->entities[0].position);
             glm::vec3 subX = glm::vec3(connection.x, 0.0f, 0.0f);
-            float cosine = connection.x;
             expectedRotation = asinf(connection.z);
+            if (connection.x < 0.0f) {
+                expectedRotation = PI - expectedRotation;
+            }
             expectedForce = fabs(instance->distrib->operator()(instance->dev)) * 8.0f + 3.0f;
             break;
         }
@@ -81,7 +83,7 @@ void NPSnookerController::process() {
     if (fabs(deltaAngle) <= 0.01f || instance->force > 0.0f) {
         float deltaForce = expectedForce - instance->force;
         instance->force += deltaForce * instance->deltaTime;
-        if (fabs(deltaForce) <= 0.01f) {
+        if (fabs(deltaForce) <= 0.1f) {
             glm::vec3 ray = glm::normalize(instance->entities[0].position - instance->camPos);
             ray.y = 0.0f;
             instance->entities[0].velocity = glm::normalize(ray) * instance->force;
