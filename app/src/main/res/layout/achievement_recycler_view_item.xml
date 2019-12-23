@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="5dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="8dp">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="118dp" >
+
+        <TextView
+            android:id="@+id/achievementName"
+            android:layout_width="1000dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:gravity="center|left"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/achievementState"
+            android:layout_width="125dp"
+            android:layout_height="match_parent"
+            android:gravity="center|right"
+            android:text="TextView" />
+    </TableRow>
+</androidx.cardview.widget.CardView>

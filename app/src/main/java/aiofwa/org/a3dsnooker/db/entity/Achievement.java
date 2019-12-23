@@ -1,6 +1,7 @@
 package aiofwa.org.a3dsnooker.db.entity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -34,6 +35,13 @@ public class Achievement {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) { return false; }
+        if (!(obj instanceof Achievement)) { return false; }
+        return id == ((Achievement) obj).getId();
     }
 
     @PrimaryKey(autoGenerate = true)

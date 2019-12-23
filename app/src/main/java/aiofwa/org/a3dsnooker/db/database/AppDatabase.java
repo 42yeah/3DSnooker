@@ -7,16 +7,19 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import aiofwa.org.a3dsnooker.db.dao.AchievementDao;
+import aiofwa.org.a3dsnooker.db.dao.RecordDao;
 import aiofwa.org.a3dsnooker.db.entity.Achievement;
+import aiofwa.org.a3dsnooker.db.entity.Record;
 
 
-@Database(entities = { Achievement.class }, version = 1, exportSchema = false)
+@Database(entities = { Achievement.class, Record.class }, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     public AppDatabase() {
         database = null;
     }
 
     public abstract AchievementDao achievementDao();
+    public abstract RecordDao getRecordDao();
 
     public static AppDatabase getInstance(Context context) {
         if (database == null) {

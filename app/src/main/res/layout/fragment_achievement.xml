@@ -1,19 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_home"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="147dp"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:id="@+id/cup"
+                android:layout_width="93dp"
+                android:layout_height="63dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_ach_head" />
+
+            <ImageView
+                android:id="@+id/leftBadge"
+                android:layout_width="105dp"
+                android:layout_height="55dp"
+                app:layout_constraintBottom_toBottomOf="@+id/achievement_prompt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_ach_beside" />
+
+            <ImageView
+                android:id="@+id/rightBadge"
+                android:layout_width="103dp"
+                android:layout_height="54dp"
+                android:layout_marginBottom="44dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/ic_ach_beside" />
+
+            <TextView
+                android:id="@+id/achievement_prompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|center"
+                android:text="@string/achievements"
+                android:textSize="36sp"
+                app:layout_constraintBottom_toBottomOf="@+id/rightBadge"
+                app:layout_constraintEnd_toStartOf="@+id/leftBadge"
+                app:layout_constraintStart_toEndOf="@+id/rightBadge"
+                app:layout_constraintTop_toBottomOf="@+id/cup"
+                app:layout_constraintVertical_bias="1.0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp" />
+    </LinearLayout>
+
+
+</LinearLayout>

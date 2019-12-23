@@ -12,7 +12,7 @@
     <string name="achievement_win">战胜了只会向花色球直线开球的电脑！现在你一定感觉不错！</string>
     <string name="achievement_lose">输给了这么菜的电脑</string>
     <string name="achievement_draw">打平</string>
-    <string name="title_activity_slidey">SlideyActivity</string>
+    <string name="title_activity_slidey">桌球 3D</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -20,4 +20,6 @@
     <string name="title_play">游玩</string>
     <string name="title_achievement">成就</string>
     <string name="title_rank">排行</string>
+    <string name="rank">排行榜</string>
+    <string name="achievements">成就列表</string>
 </resources>

@@ -1,5 +1,6 @@
 package aiofwa.org.a3dsnooker.db.dao;
 
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,6 +15,9 @@ import aiofwa.org.a3dsnooker.db.entity.Achievement;
 public interface AchievementDao {
     @Query("SELECT * FROM achievement")
     List<Achievement> getAll();
+
+    @Query("SELECT * FROM achievement ORDER BY finished DESC")
+    DataSource.Factory<Integer, Achievement> loadAll();
 
     @Query("SELECT * FROM achievement WHERE finished=0")
     List<Achievement> getUnfinishedAchievements();

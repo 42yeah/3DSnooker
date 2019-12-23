@@ -1,6 +1,6 @@
 package aiofwa.org.a3dsnooker;
 
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel;
 
 
 public class GlobalViewModel extends ViewModel {

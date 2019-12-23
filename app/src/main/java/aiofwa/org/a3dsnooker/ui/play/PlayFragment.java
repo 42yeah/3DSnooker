@@ -8,17 +8,15 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,10 +28,10 @@ import aiofwa.org.a3dsnooker.NotificationBlabber;
 import aiofwa.org.a3dsnooker.R;
 import aiofwa.org.a3dsnooker.GlobalViewModel;
 import aiofwa.org.a3dsnooker.SlideyActivity;
-import aiofwa.org.a3dsnooker.SnookerActivity;
 import aiofwa.org.a3dsnooker.db.dao.AchievementDao;
 import aiofwa.org.a3dsnooker.db.database.AppDatabase;
 import aiofwa.org.a3dsnooker.db.entity.Achievement;
+import aiofwa.org.a3dsnooker.db.entity.Record;
 import aiofwa.org.a3dsnooker.game.Engine;
 
 
@@ -46,7 +44,7 @@ public class PlayFragment extends Fragment {
         assert getActivity() != null;
         assert getContext() != null;
 
-        activity = getActivity();
+        activity = (SlideyActivity) getActivity();
         
         globalViewModel = ViewModelProviders.of(getActivity()).get(GlobalViewModel.class);
         LinearLayout root = (LinearLayout) inflater.inflate(R.layout.fragment_play, container, false);
@@ -77,6 +75,9 @@ public class PlayFragment extends Fragment {
         engineWrapper.addView(gameEngine);
 
         achievements = null;
+        running = true;
+        anyoneMoved = false;
+
         new Thread() {
             @Override
             public void run() {
@@ -92,22 +93,42 @@ public class PlayFragment extends Fragment {
                                         break;
 
                                     case 0:
+                                        if (!anyoneMoved) {
+                                            startTime = System.currentTimeMillis();
+                                        }
+                                        anyoneMoved = true;
                                         display = activity.getString(R.string.your_turn);
                                         break;
 
                                     case 1:
+                                        anyoneMoved = true;
                                         display = activity.getString(R.string.npc_turn);
                                         break;
                                 }
                                 break;
 
                             case 1:
+                                if (!anyoneMoved) {
+                                    break;
+                                }
+                                if (startTime != 0) {
+                                    lapse = 180.0f - (System.currentTimeMillis() - startTime) / 1000.0f;
+                                    AppDatabase.getInstance(activity).getRecordDao().insertRecord(new Record(lapse, 0));
+                                    startTime = 0;
+                                }
                                 display = activity.getString(R.string.you_win);
                                 checkAchievement(activity.getString(R.string.you_win));
                                 break;
 
                             case 2:
-
+                                if (!anyoneMoved) {
+                                    break;
+                                }
+                                if (startTime != 0) {
+                                    lapse = 180.0f - (System.currentTimeMillis() - startTime) / 1000.0f;
+                                    AppDatabase.getInstance(activity).getRecordDao().insertRecord(new Record(lapse, 1));
+                                    startTime = 0;
+                                }
                                 display = activity.getString(R.string.npc_win);
                                 checkAchievement(activity.getString(R.string.achievement_lose));
                                 break;
@@ -128,7 +149,7 @@ public class PlayFragment extends Fragment {
 
         // === NOTIFICATION SETUP === //
         Intent notificationBlabberIntent = new Intent(getContext(), NotificationBlabber.class);
-        ServiceConnection blabber = new ServiceConnection() {
+        blabber = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Log.i("Snooker3D", "Blabber is ready!");
@@ -144,24 +165,12 @@ public class PlayFragment extends Fragment {
 
             }
         };
-        getContext().bindService(notificationBlabberIntent, blabber, Context.BIND_AUTO_CREATE);
+        activity.bindService(notificationBlabberIntent, blabber, Context.BIND_AUTO_CREATE);
         blabQueue = new PriorityQueue<>();
 
         root.addView(engineWrapper);
-        running = true;
 
-        root.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.e("Snooker3D", "Ph yeah that's how it feel");
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    onBackPressed();
-                }
-                return true;
-            }
-        });
-
-        ((SlideyActivity) activity).setOnBackPressedListener(new Runnable() {
+        activity.setOnBackPressedListener(new Runnable() {
             @Override
             public void run() {
                 onBackPressed();
@@ -174,6 +183,9 @@ public class PlayFragment extends Fragment {
     @Override
     public void onDestroy() {
         running = false;
+        if (blabber != null) {
+            activity.unbindService(blabber);
+        }
         super.onDestroy();
     }
 
@@ -256,11 +268,17 @@ public class PlayFragment extends Fragment {
     LinearLayout engineWrapper;
     TextView gameInfo;
     boolean running;
-    Activity activity;
+    SlideyActivity activity;
 
     List<Achievement> achievements;
 
     // === BLABBER SETUP === //
     NotificationBlabber blabberInstance;
     Queue<String> blabQueue;
+    ServiceConnection blabber;
+
+    // === HARD DEBUG === //
+    boolean anyoneMoved;
+    long startTime;
+    float lapse;
 }
