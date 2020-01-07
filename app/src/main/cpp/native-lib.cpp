@@ -103,3 +103,10 @@ JNIEXPORT void JNICALL
 Java_aiofwa_org_a3dsnooker_game_Engine_backToMainMenu(JNIEnv *env, jobject thiz) {
     game->backToMainMenu();
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_aiofwa_org_a3dsnooker_game_Engine_shutdown(JNIEnv *env, jobject thiz) {
+    LOG("Shutting down game");
+    game->shutdown();
+}

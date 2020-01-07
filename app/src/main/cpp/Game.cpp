@@ -25,7 +25,7 @@ void establishServer(Game *game) {
 
 // === MAIN GAME === //
 Game::Game(Resources *loader) : resourceLoader(loader) {
-
+    ImGui_ImplOpenGL3_Shutdown();
 }
 
 void Game::init(int w, int h) {
@@ -216,4 +216,8 @@ int Game::getControllingController() {
 
 void Game::backToMainMenu() {
     this->renderState = MENU;
+}
+
+void Game::shutdown() {
+    ImGui_ImplOpenGL3_Shutdown();
 }

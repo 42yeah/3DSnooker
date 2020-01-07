@@ -26,6 +26,12 @@ public class Engine extends GLSurfaceView {
         motionEvent(event.getAction(), event.getX() / w, event.getY() / h);
     }
 
+    @Override
+    public void onPause() {
+        shutdown();
+        super.onPause();
+    }
+
     // === NATIVE === //
     static {
         System.loadLibrary("native-lib");
@@ -35,6 +41,7 @@ public class Engine extends GLSurfaceView {
     public native int getSnookerWinner();
     public native int getSnookerControllingController();
     public native void backToMainMenu();
+    public native void shutdown();
 
     // === VARIABLES === //
     Context context;

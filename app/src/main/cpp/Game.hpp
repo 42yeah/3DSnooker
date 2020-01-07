@@ -36,6 +36,7 @@ public:
     void startGame();
     void startOption();
     void updateEvent(glm::vec2 fingerPos, bool fingerPressed);
+    void shutdown();
 
     WindowWrapper *getWindowWrapper();
     ImGuiIO *getImGuiIO();
